@@ -2,50 +2,44 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const UserRepositoryClass = require('../repositories/UserRepository');
+const { AppError, handleRouteError } = require('../utils/errorHandler');
+
 const router = express.Router();
 
 const SALT_ROUNDS = 10;
-// TODO: Move JWT secrets and expirations to .env
-const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'your-default-access-secret'; // Replace with a strong secret
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-default-refresh-secret'; // Replace with a strong secret
-const JWT_ACCESS_EXPIRATION = '15m'; // e.g., 15 minutes
-const JWT_REFRESH_EXPIRATION = '7d'; // e.g., 7 days
+// JWT secrets and expirations - now properly using environment variables
+const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'your-default-access-secret';
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-default-refresh-secret';
+const JWT_ACCESS_EXPIRATION = process.env.JWT_ACCESS_EXPIRATION || '15m';
+const JWT_REFRESH_EXPIRATION = process.env.JWT_REFRESH_EXPIRATION || '7d';
 
 const userRepository = new UserRepositoryClass();
 
 // POST /api/auth/register
 router.post('/register', async (req, res, next) => {
-    const { email, pin } = req.body;
-
-    // Basic validation
-    if (!email || !pin) {
-        return res.status(400).json({
-            success: false,
-            error: { code: 'BAD_REQUEST', message: 'Email and PIN are required.' }
-        });
-    }
-
-    // Validate PIN format (e.g., 4 digits)
-    if (!/^\d{4}$/.test(pin)) {
-        return res.status(400).json({
-            success: false,
-            error: { code: 'INVALID_PIN_FORMAT', message: 'PIN must be 4 digits.' }
-        });
-    }
-
     try {
-        const existingUser = await userRepository.findUserByEmail(email);
-        if (existingUser) {
-            return res.status(409).json({ // 409 Conflict
-                success: false,
-                error: { code: 'EMAIL_EXISTS', message: 'Email already registered.' }
-            });
+        const { email, pin } = req.body;
+
+        // Validation
+        if (!email || !pin) {
+            throw new AppError('Email and PIN are required.', 400, 'BAD_REQUEST');
         }
 
+        if (!/^\d{4}$/.test(pin)) {
+            throw new AppError('PIN must be 4 digits.', 400, 'INVALID_PIN_FORMAT');
+        }
+
+        // Check if user already exists
+        const existingUser = await userRepository.findUserByEmail(email);
+        if (existingUser) {
+            throw new AppError('Email already registered.', 409, 'EMAIL_EXISTS');
+        }
+
+        // Create user
         const pinHash = await bcrypt.hash(pin, SALT_ROUNDS);
         const newUser = await userRepository.createUser(email, pinHash);
 
-        // Exclude pin_hash from the response
+        // Exclude pin_hash from response
         const { pin_hash, ...userWithoutPin } = newUser;
 
         res.status(201).json({ 
@@ -54,95 +48,73 @@ router.post('/register', async (req, res, next) => {
             user: userWithoutPin 
         });
     } catch (error) {
-        // if (error.message === 'Email already exists') { // This check is now done above
-        //     return res.status(409).json({ 
-        //         success: false,
-        //         error: { code: 'EMAIL_EXISTS', message: 'Email already registered.' }
-        //     });
-        // }
-        next(error); // Pass other errors to the global error handler
+        handleRouteError(error, res, next);
     }
 });
 
 // POST /api/auth/login
 router.post('/login', async (req, res, next) => {
-    const { email, pin } = req.body;
-
-    if (!email || !pin) {
-        return res.status(400).json({
-            success: false,
-            error: { code: 'BAD_REQUEST', message: 'Email and PIN are required.' }
-        });
-    }
-
     try {
+        const { email, pin } = req.body;
+
+        // Validation
+        if (!email || !pin) {
+            throw new AppError('Email and PIN are required.', 400, 'BAD_REQUEST');
+        }
+
+        // Find user and verify credentials
         const user = await userRepository.findUserByEmail(email);
         if (!user) {
-            return res.status(401).json({
-                success: false,
-                error: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or PIN.' }
-            });
+            throw new AppError('Invalid email or PIN.', 401, 'INVALID_CREDENTIALS');
         }
 
         const isPinValid = await bcrypt.compare(pin, user.pin_hash);
         if (!isPinValid) {
-            return res.status(401).json({
-                success: false,
-                error: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or PIN.' }
-            });
+            throw new AppError('Invalid email or PIN.', 401, 'INVALID_CREDENTIALS');
         }
 
-        // User authenticated, generate tokens
+        // Generate tokens
         const accessTokenPayload = { sub: user.id, type: 'ACCESS' };
         const refreshTokenPayload = { sub: user.id, type: 'REFRESH' }; 
 
         const accessToken = jwt.sign(accessTokenPayload, JWT_ACCESS_SECRET, { expiresIn: JWT_ACCESS_EXPIRATION });
         const refreshToken = jwt.sign(refreshTokenPayload, JWT_REFRESH_SECRET, { expiresIn: JWT_REFRESH_EXPIRATION });
 
-        // Exclude pin_hash from the user object in response
-        const userResponse = { ...user };
-        delete userResponse.pin_hash;
+        // Exclude pin_hash from response
+        const { pin_hash, ...userWithoutPin } = user;
 
         res.json({
             success: true,
             accessToken,
             refreshToken,
-            user: userResponse
+            user: userWithoutPin
         });
-
     } catch (error) {
-        next(error);
+        handleRouteError(error, res, next);
     }
 });
 
 // POST /api/auth/refresh-token
 router.post('/refresh-token', async (req, res, next) => {
-    const { refreshToken } = req.body;
-
-    if (!refreshToken) {
-        return res.status(400).json({
-            success: false,
-            error: { code: 'BAD_REQUEST', message: 'Refresh token is required.' }
-        });
-    }
-
     try {
-        const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
+        const { refreshToken } = req.body;
 
-        // Check if the token type is REFRESH
-        if (decoded.type !== 'REFRESH') {
-             return res.status(401).json({
-                success: false,
-                error: { code: 'INVALID_TOKEN', message: 'Invalid token type.' }
-            });
+        if (!refreshToken) {
+            throw new AppError('Refresh token is required.', 400, 'BAD_REQUEST');
         }
 
+        // Verify refresh token
+        const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
+
+        // Check token type
+        if (decoded.type !== 'REFRESH') {
+            throw new AppError('Invalid token type.', 401, 'INVALID_TOKEN');
+        }
+
+        // Verify user still exists
         const user = await userRepository.findUserById(decoded.sub);
         if (!user) {
-            return res.status(401).json({
-                success: false,
-                error: { code: 'USER_NOT_FOUND', message: 'User associated with token not found.' }
-            });
+            throw new AppError('User associated with token not found.', 401, 'INVALID_TOKEN');
         }
 
         // Issue new access token
@@ -153,28 +125,28 @@ router.post('/refresh-token', async (req, res, next) => {
             success: true,
             accessToken: newAccessToken
         });
-
     } catch (error) {
-        // Handle JWT errors (e.g., expired, invalid signature)
+        // Handle JWT-specific errors
         if (error instanceof jwt.TokenExpiredError) {
-            return res.status(401).json({
-                success: false,
-                error: { code: 'TOKEN_EXPIRED', message: 'Refresh token has expired.' }
-            });
+            return handleRouteError(new AppError('Refresh token has expired.', 401, 'TOKEN_EXPIRED'), res, next);
         }
         if (error instanceof jwt.JsonWebTokenError) {
-            return res.status(401).json({
-                success: false,
-                error: { code: 'INVALID_TOKEN', message: 'Invalid refresh token.' }
-            });
+            return handleRouteError(new AppError('Invalid refresh token.', 401, 'INVALID_TOKEN'), res, next);
         }
-        next(error); // Pass other errors to global error handler
+        
+        handleRouteError(error, res, next);
     }
 });
 
-// Placeholder for GET /api/auth/me
+// GET /api/auth/me - Placeholder for protected route
 router.get('/me', (req, res) => {
-    res.status(501).json({ message: 'Me endpoint not implemented yet' });
+    res.status(501).json({ 
+        success: false,
+        error: {
+            code: 'NOT_IMPLEMENTED',
+            message: 'Me endpoint not implemented yet' 
+        }
+    });
 });
 
 module.exports = router;

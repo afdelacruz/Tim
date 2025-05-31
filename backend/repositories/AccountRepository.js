@@ -74,6 +74,19 @@ class AccountRepository {
         await db.query('DELETE FROM accounts');
     }
 
+    async deleteAccountsByUserId(userId) {
+        if (process.env.NODE_ENV !== 'test') {
+            throw new Error('deleteAccountsByUserId can only be run in test environment');
+        }
+        const query = 'DELETE FROM accounts WHERE user_id = $1';
+        try {
+            await db.pool.query(query, [userId]);
+        } catch (err) {
+            console.error(`Error deleting accounts for user ${userId}:`, err);
+            throw new Error('Could not delete accounts for user');
+        }
+    }
+
     async deleteAccountById(id) {
         const query = 'DELETE FROM accounts WHERE id = $1 RETURNING *';
         try {
