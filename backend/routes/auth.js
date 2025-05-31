@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const UserRepositoryClass = require('../repositories/UserRepository');
 const { AppError, handleRouteError } = require('../utils/errorHandler');
+const { authenticateToken } = require('../utils/authMiddleware');
 
 const router = express.Router();
 
@@ -138,15 +139,17 @@ router.post('/refresh-token', async (req, res, next) => {
     }
 });
 
-// GET /api/auth/me - Placeholder for protected route
-router.get('/me', (req, res) => {
-    res.status(501).json({ 
-        success: false,
-        error: {
-            code: 'NOT_IMPLEMENTED',
-            message: 'Me endpoint not implemented yet' 
-        }
-    });
+// GET /api/auth/me - Get current user info (protected route)
+router.get('/me', authenticateToken, async (req, res, next) => {
+    try {
+        // User is already attached to req.user by authenticateToken middleware
+        res.json({
+            success: true,
+            user: req.user
+        });
+    } catch (error) {
+        handleRouteError(error, res, next);
+    }
 });
 
 module.exports = router;

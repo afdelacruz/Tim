@@ -1,5 +1,32 @@
 # Tim - Weekend MVP
 
+## 📊 **DEVELOPMENT PROGRESS SUMMARY**
+
+### ✅ **COMPLETED FEATURES (4/6 major steps)**
+- **Step 0**: Environment & Account Setup ✅
+- **Step 1**: Simplified Backend ✅
+  - 1.1: Basic Server Setup ✅
+  - 1.2: Simplified Database Schema ✅  
+  - 1.3: Email + PIN Authentication ✅
+  - 1.4: Global Error Handling ✅
+- **Step 2**: Plaid Integration ❌ (0/3 substeps)
+- **Step 3**: Account Configuration ❌ (0/2 substeps)
+- **Step 4**: iOS App ❌ (0/4 substeps)
+- **Step 5**: Widget Implementation ❌ (0/2 substeps)
+- **Step 6**: Testing & Polish ❌ (0/2 substeps)
+
+### 📈 **OVERALL PROGRESS: 33% Complete**
+- **Backend Foundation**: 100% Complete
+- **Authentication System**: 100% Complete
+- **Plaid Integration**: 0% Complete
+- **iOS Development**: 0% Complete
+- **Widget Development**: 0% Complete
+
+### 🎯 **NEXT PRIORITY**: Step 1.5 - JWT Authentication Middleware
+**Estimated Remaining Work**: ~2-3 weeks for full MVP
+
+---
+
 ## App Purpose
 **"Time is money"** - Check your money as quickly as checking the time
 
@@ -134,9 +161,9 @@ CREATE TABLE balance_snapshots (
 ```
 
 **Acceptance Criteria:**
-- [ ] Database connection established.
-- [ ] All tables created with proper constraints (including `plaid_item_id`, `plaid_access_token`, and `needs_reauthentication` in `accounts` table), verified by schema inspection and test setup/teardown.
-- [ ] Basic CRUD operations work internally within database models/repositories, verified by unit tests for these data access components.
+- [x] Database connection established.
+- [x] All tables created with proper constraints (including `plaid_item_id`, `plaid_access_token`, and `needs_reauthentication` in `accounts` table), verified by schema inspection and test setup/teardown.
+- [x] Basic CRUD operations work internally within database models/repositories, verified by unit tests for these data access components.
     *   Example Unit Tests for `UserRepository`:
         *   `testCreateUser_withValidData_savesUserCorrectly`: Ensures a new user can be successfully created and persisted in the database. Verifies the core user creation path.
         *   `testFindUserByEmail_withExistingEmail_returnsUser`: Checks that users can be retrieved by their email. Essential for login and lookups.
@@ -146,7 +173,6 @@ CREATE TABLE balance_snapshots (
         *   `testFindAccountsByUserId_returnsCorrectAccounts`: Ensures all accounts belonging to a specific user can be retrieved. Needed for displaying user accounts.
         *   `testUpdateAccountCategories_updatesFlagsCorrectly`: Checks that inflow/outflow category settings for an account can be updated. Verifies user configuration persistence.
         *   `testSetNeedsReauthentication_forItem_updatesFlagsOnAssociatedAccounts`: Ensures accounts linked to a Plaid item are correctly flagged if Plaid requires re-authentication for that item. Key for managing Plaid connection health.
-    *   Example Unit Tests for `BalanceSnapshotRepository`:
         *   `testSaveSnapshot_withValidData_savesSnapshot`: Confirms that daily balance snapshots for an account are stored. Fundamental for tracking balance changes.
         *   `testGetLatestSnapshotForAccount_returnsCorrectSnapshot`: Verifies retrieval of the most recent balance snapshot. Used for current balance display.
         *   `testGetSnapshotForAccountOnDate_returnsCorrectSnapshot`: Ensures a snapshot for a specific date can be fetched. Used for historical balance lookup (e.g., start of month).
@@ -171,21 +197,21 @@ CREATE TABLE balance_snapshots (
 6. For subsequent API calls, client uses access token. If expired, client uses refresh token to get a new access token.
 
 **Acceptance Criteria:**
-- [ ] User registration (`POST /api/auth/register`) creates a new user with email and securely hashed PIN, verified by unit and integration tests.
+- [x] User registration (`POST /api/auth/register`) creates a new user with email and securely hashed PIN, verified by unit and integration tests.
     *   Example Unit Tests for Registration Logic (`AuthService`):
         *   `testRegisterUser_whenEmailNotTaken_createsUserAndReturnsTokens`: Verifies successful user creation and token generation for a new email. Ensures the primary registration path works.
         *   `testRegisterUser_whenEmailIsTaken_throwsConflictError`: Ensures the system prevents duplicate registrations with the same email, maintaining email uniqueness.
-- [ ] Login (`POST /api/auth/login`) with email + PIN returns a JWT access token and a refresh token, verified by unit and integration tests.
+- [x] Login (`POST /api/auth/login`) with email + PIN returns a JWT access token and a refresh token, verified by unit and integration tests.
     *   Example Unit Tests for Login Logic (`AuthService`):
         *   `testLoginUser_withValidCredentials_returnsAccessTokenAndRefreshToken`: Checks that a user with correct email and PIN receives the necessary tokens for session management.
         *   `testLoginUser_withInvalidPin_throwsUnauthorizedError`: Ensures login fails if the PIN is incorrect. Prevents unauthorized access.
         *   `testLoginUser_withNonExistentUser_throwsUnauthorizedError`: Confirms login fails for emails not registered in the system.
-- [ ] Access token is short-lived (e.g., 15-60 minutes). Refresh token is long-lived (e.g., 30-90 days).
-- [ ] JWT access tokens contain necessary claims (e.g., `sub` for user ID, `iss`, `iat`, `exp`), with claims structure verified in tests.
+- [x] Access token is short-lived (e.g., 15-60 minutes). Refresh token is long-lived (e.g., 30-90 days).
+- [x] JWT access tokens contain necessary claims (e.g., `sub` for user ID, `iss`, `iat`, `exp`), with claims structure verified in tests.
     *   Example Unit Tests for Token Generation (`AuthService`):
         *   `testGenerateAccessToken_forUser_returnsValidJwtWithCorrectClaims`: Verifies the access token is structured correctly with all required user and token metadata.
         *   `testGenerateRefreshToken_forUser_returnsValidToken`: Ensures the refresh token is generated as expected.
-- [ ] `/api/auth/refresh-token` endpoint successfully exchanges a valid refresh token for a new access token, verified by unit and integration tests.
+- [x] `/api/auth/refresh-token` endpoint successfully exchanges a valid refresh token for a new access token, verified by unit and integration tests.
     *   Example Unit Tests for Token Refresh Logic (`AuthService`):
         *   `testVerifyRefreshToken_withValidToken_returnsUserPayloadAndAllowsNewAccessToken`: Checks that a valid refresh token can be used to obtain a new access token. Key for seamless session renewal.
         *   `testVerifyRefreshToken_withInvalidOrExpiredToken_throwsError`: Ensures that expired or invalid refresh tokens cannot be used. Maintains security.
