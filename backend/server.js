@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/auth');
+const plaidRoutes = require('./routes/plaid');
 const { globalErrorHandler } = require('./utils/errorHandler');
 
 const app = express();
@@ -45,9 +46,9 @@ app.get('/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/plaid', plaidRoutes);
 
 // Placeholder for future routes
-// app.use('/api/plaid', plaidRoutes);
 // app.use('/api/balances', balanceRoutes);
 
 // 404 handler for unmatched routes
