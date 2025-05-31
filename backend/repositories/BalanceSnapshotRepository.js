@@ -82,6 +82,16 @@ class BalanceSnapshotRepository {
         }
         await db.query('DELETE FROM balance_snapshots');
     }
+
+    async deleteAllBalanceSnapshotsByAccountId(accountId) {
+        const query = 'DELETE FROM balance_snapshots WHERE account_id = $1';
+        try {
+            await db.pool.query(query, [accountId]);
+        } catch (err) {
+            console.error(`Error deleting balance snapshots for account ${accountId}:`, err);
+            throw new Error('Could not delete balance snapshots for account');
+        }
+    }
 }
 
 module.exports = new BalanceSnapshotRepository();

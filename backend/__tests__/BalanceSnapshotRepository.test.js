@@ -1,29 +1,50 @@
 const BalanceSnapshotRepository = require('../repositories/BalanceSnapshotRepository');
 const AccountRepository = require('../repositories/AccountRepository');
-const UserRepository = require('../repositories/UserRepository');
+const UserRepositoryClass = require('../repositories/UserRepository');
+const UserRepository = new UserRepositoryClass();
 const db = require('../db');
 
 describe('BalanceSnapshotRepository', () => {
     let testUser;
     let testAccount;
+    const testUserEmail = 'snapshot.repo@example.com';
+    const testAccountPlaidId = 'acc_snap_id_repo';
 
     beforeAll(async () => {
-        await UserRepository.deleteAllUsers();
-        await AccountRepository.deleteAllAccounts();
-        testUser = await UserRepository.createUser('snapshot_user@example.com', 'hashedpin');
+        await UserRepositoryClass.deleteUserByEmail(testUserEmail);
+        testUser = await UserRepository.createUser(testUserEmail, 'hashedpin');
+        console.log('[BalanceSnapshotRepoTests] Test user created:', testUser ? testUser.id : 'null');
+        
+        // Clean up a potentially lingering account with the same plaidAccountId before creating
+        const existingAccounts = await AccountRepository.findAccountsByUserId(testUser.id);
+        const conflictingAccount = existingAccounts.find(acc => acc.plaid_account_id === testAccountPlaidId);
+        if (conflictingAccount) {
+            console.log('[BalanceSnapshotRepoTests] Deleting conflicting account:', conflictingAccount.id);
+            await AccountRepository.deleteAccountById(conflictingAccount.id); // Assumes deleteAccountById exists
+        }
+
         testAccount = await AccountRepository.saveAccount(
-            testUser.id, 'item_snap', 'access_snap', 'acc_snap_id', 'Snapshot Test Account', 'depository', 'Bank Snap'
+            testUser.id, 'item_snap_repo', 'access_snap_repo', testAccountPlaidId, 
+            'Snapshot Repo Test Account', 'depository', 'Bank Snap Repo'
         );
+        console.log('[BalanceSnapshotRepoTests] Test account created in beforeAll:', testAccount ? testAccount.id : 'null');
     });
 
     beforeEach(async () => {
-        await BalanceSnapshotRepository.deleteAllBalanceSnapshots();
+        if (testAccount) { // Ensure testAccount was created
+             await BalanceSnapshotRepository.deleteAllBalanceSnapshotsByAccountId(testAccount.id); // Targeted cleanup
+        } else {
+            // Fallback if testAccount is somehow not set (should not happen in normal flow)
+            await BalanceSnapshotRepository.deleteAllBalanceSnapshots();
+        }
     });
 
     afterAll(async () => {
-        await BalanceSnapshotRepository.deleteAllBalanceSnapshots();
-        await AccountRepository.deleteAllAccounts();
-        await UserRepository.deleteAllUsers();
+        if (testAccount) {
+            await BalanceSnapshotRepository.deleteAllBalanceSnapshotsByAccountId(testAccount.id);
+            await AccountRepository.deleteAccountById(testAccount.id); // Assumes deleteAccountById exists
+        }
+        await UserRepositoryClass.deleteUserByEmail(testUserEmail);
         await db.pool.end();
     });
 
@@ -33,6 +54,7 @@ describe('BalanceSnapshotRepository', () => {
         it('testSaveSnapshot_withValidData_savesSnapshot', async () => {
             const today = new Date();
             const balance = 1234.56;
+            console.log('[BalanceSnapshotRepoTests] In testSaveSnapshot, testAccount:', testAccount ? testAccount.id : 'null', 'testUser:', testUser ? testUser.id : 'null');
             const snapshot = await BalanceSnapshotRepository.saveSnapshot(testAccount.id, balance, today);
             expect(snapshot).toBeDefined();
             expect(snapshot.id).toBeDefined();
@@ -43,6 +65,7 @@ describe('BalanceSnapshotRepository', () => {
 
         it('should throw an error if saving a snapshot for the same account and date', async () => {
             const today = new Date();
+            console.log('[BalanceSnapshotRepoTests] In testSaveSnapshot (duplicate check), testAccount:', testAccount ? testAccount.id : 'null');
             await BalanceSnapshotRepository.saveSnapshot(testAccount.id, 1000.00, today);
             await expect(BalanceSnapshotRepository.saveSnapshot(testAccount.id, 2000.00, today))
                 .rejects

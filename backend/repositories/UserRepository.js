@@ -41,8 +41,18 @@ class UserRepository {
         }
     }
 
-    // Helper for tests to clean up
-    async deleteAllUsers() {
+    static async deleteUserByEmail(email) {
+        const query = 'DELETE FROM users WHERE email = $1 RETURNING *';
+        try {
+            const { rows } = await db.pool.query(query, [email]);
+            return rows[0]; // Returns the deleted user or undefined
+        } catch (err) {
+            console.error('Error deleting user by email:', err);
+            throw new Error('Could not delete user by email');
+        }
+    }
+
+    static async deleteAllUsers() {
         if (process.env.NODE_ENV !== 'test') {
             throw new Error('deleteAllUsers can only be run in test environment');
         }
@@ -50,4 +60,4 @@ class UserRepository {
     }
 }
 
-module.exports = new UserRepository();
+module.exports = UserRepository;
