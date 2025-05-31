@@ -73,6 +73,17 @@ class AccountRepository {
         }
         await db.query('DELETE FROM accounts');
     }
+
+    async deleteAccountById(id) {
+        const query = 'DELETE FROM accounts WHERE id = $1 RETURNING *';
+        try {
+            const { rows } = await db.pool.query(query, [id]);
+            return rows[0];
+        } catch (err) {
+            console.error(`Error deleting account by id ${id}:`, err);
+            throw new Error('Could not delete account by id');
+        }
+    }
 }
 
 module.exports = new AccountRepository();

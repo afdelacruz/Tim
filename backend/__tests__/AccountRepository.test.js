@@ -1,25 +1,24 @@
 const AccountRepository = require('../repositories/AccountRepository');
-const UserRepository = require('../repositories/UserRepository');
+const UserRepositoryClass = require('../repositories/UserRepository');
+const UserRepository = new UserRepositoryClass();
 const db = require('../db');
 
 describe('AccountRepository', () => {
     let testUser;
+    const testUserEmail = 'accounttest.repo@example.com';
 
     beforeAll(async () => {
-        // Create a test user for account operations
-        await UserRepository.deleteAllUsers(); // Clean users first due to foreign key
-        testUser = await UserRepository.createUser('accounttest@example.com', 'hashedpin');
+        await UserRepositoryClass.deleteUserByEmail(testUserEmail); // Clean up this specific user before creating
+        testUser = await UserRepository.createUser(testUserEmail, 'hashedpin');
     });
 
     beforeEach(async () => {
-        // Clear the accounts table before each test
-        await AccountRepository.deleteAllAccounts();
+        await AccountRepository.deleteAllAccounts(); // Necessary for this suite's test logic
     });
 
     afterAll(async () => {
-        // Clear all tables and close pool
         await AccountRepository.deleteAllAccounts();
-        await UserRepository.deleteAllUsers();
+        await UserRepositoryClass.deleteUserByEmail(testUserEmail); // Clean up the specific user
         await db.pool.end();
     });
 

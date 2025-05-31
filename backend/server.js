@@ -11,6 +11,7 @@ console.log('----------------------------------');
 
 const express = require('express');
 const cors = require('cors');
+const authRoutes = require('./routes/auth'); // Import auth routes
 
 const app = express();
 
@@ -23,8 +24,10 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'UP', message: 'Server is healthy' });
 });
 
-// Placeholder for future routes (e.g., auth, plaid, balances)
-// app.use('/api/auth', authRoutes);
+// Mount auth routes
+app.use('/api/auth', authRoutes);
+
+// Placeholder for future routes (e.g., plaid, balances)
 // app.use('/api/plaid', plaidRoutes);
 // app.use('/api/balances', balanceRoutes);
 
