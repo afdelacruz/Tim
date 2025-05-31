@@ -49,7 +49,11 @@ app.use((err, req, res, next) => {
 // Define Port
 const PORT = process.env.PORT || 3001; // Railway provides PORT env var
 
-// Start Server
-app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
-});
+// Conditionally start server only if this file is run directly
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server listening on port ${PORT}`);
+    });
+}
+
+module.exports = app; // Export the app for testing
