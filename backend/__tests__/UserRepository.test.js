@@ -3,10 +3,10 @@ const UserRepository = new UserRepositoryClass();
 const db = require('../db'); // For direct pool access for teardown
 
 describe('UserRepository', () => {
-    beforeEach(async () => {
-        // Clean the users table before each test in this suite
-        await UserRepositoryClass.deleteAllUsers();
-    });
+    // beforeEach(async () => {
+    //     // Clean the users table before each test in this suite
+    //     await UserRepositoryClass.deleteAllUsers();
+    // });
 
     afterAll(async () => {
         // Ensure all users are cleaned up after the suite and close DB connection

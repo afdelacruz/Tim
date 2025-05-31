@@ -13,11 +13,18 @@ describe('AccountRepository', () => {
     });
 
     beforeEach(async () => {
-        await AccountRepository.deleteAllAccounts(); // Necessary for this suite's test logic
+        if (testUser && testUser.id) {
+            await AccountRepository.deleteAccountsByUserId(testUser.id);
+        } else {
+            console.warn('[AccountRepoTests] testUser not defined in beforeEach, resorting to deleteAllAccounts');
+            await AccountRepository.deleteAllAccounts();
+        }
     });
 
     afterAll(async () => {
-        await AccountRepository.deleteAllAccounts();
+        if (testUser && testUser.id) {
+            await AccountRepository.deleteAccountsByUserId(testUser.id);
+        }
         await UserRepositoryClass.deleteUserByEmail(testUserEmail); // Clean up the specific user
         await db.pool.end();
     });

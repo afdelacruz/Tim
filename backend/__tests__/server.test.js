@@ -6,7 +6,12 @@ describe('GET /health', () => {
     it('should respond with 200 OK and a health message', async () => {
         const response = await request(app).get('/health');
         expect(response.statusCode).toBe(200);
-        expect(response.body).toEqual({ status: 'UP', message: 'Server is healthy' });
+        expect(response.body).toMatchObject({ 
+            status: 'UP', 
+            message: 'Server is healthy',
+            environment: expect.any(String)
+        });
+        expect(response.body.timestamp).toBeDefined();
     });
 });
 
