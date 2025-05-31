@@ -30,6 +30,17 @@ class AccountRepository {
         }
     }
 
+    async findAllActiveAccounts() {
+        const query = 'SELECT * FROM accounts WHERE needs_reauthentication = false';
+        try {
+            const { rows } = await db.query(query);
+            return rows;
+        } catch (err) {
+            console.error('Error finding all active accounts:', err);
+            throw new Error('Could not find all active accounts');
+        }
+    }
+
     async findAccountById(accountId) { // Helper that might be useful
         const query = 'SELECT * FROM accounts WHERE id = $1';
         const values = [accountId];
