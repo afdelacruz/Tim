@@ -222,4 +222,97 @@ describe('Auth Routes - /api/auth', () => {
             expect(response.body.error.code).toBe('BAD_REQUEST');
         });
     });
+
+    describe('GET /me', () => {
+        const meTestUser = { email: 'metest.auth@example.com', pin: '1234' };
+        let validAccessToken;
+        let userId;
+
+        beforeEach(async () => {
+            await UserRepositoryClass.deleteUserByEmail(meTestUser.email);
+            const hashedPin = await bcrypt.hash(meTestUser.pin, 10);
+            const user = await UserRepository.createUser(meTestUser.email, hashedPin);
+            userId = user.id;
+
+            const loginResponse = await request(app)
+                .post('/api/auth/login')
+                .send(meTestUser);
+            validAccessToken = loginResponse.body.accessToken;
+        });
+
+        it('should return current user info with valid access token', async () => {
+            const response = await request(app)
+                .get('/api/auth/me')
+                .set('Authorization', `Bearer ${validAccessToken}`);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.success).toBe(true);
+            expect(response.body.user).toBeDefined();
+            expect(response.body.user.id).toBe(userId);
+            expect(response.body.user.email).toBe(meTestUser.email);
+            expect(response.body.user.pin_hash).toBeUndefined();
+        });
+
+        it('should return 401 if no authorization header is provided', async () => {
+            const response = await request(app).get('/api/auth/me');
+
+            expect(response.statusCode).toBe(401);
+            expect(response.body.success).toBe(false);
+            expect(response.body.error.code).toBe('MISSING_TOKEN');
+        });
+
+        it('should return 401 if authorization header is malformed', async () => {
+            const response = await request(app)
+                .get('/api/auth/me')
+                .set('Authorization', 'InvalidFormat');
+
+            expect(response.statusCode).toBe(401);
+            expect(response.body.error.code).toBe('MISSING_TOKEN');
+        });
+
+        it('should return 401 if access token is expired', async () => {
+            const expiredToken = jwt.sign(
+                { sub: userId, type: 'ACCESS' },
+                process.env.JWT_ACCESS_SECRET || 'your-default-access-secret',
+                { expiresIn: '-1s' }
+            );
+
+            const response = await request(app)
+                .get('/api/auth/me')
+                .set('Authorization', `Bearer ${expiredToken}`);
+
+            expect(response.statusCode).toBe(401);
+            expect(response.body.error.code).toBe('TOKEN_EXPIRED');
+        });
+
+        it('should return 401 if access token has invalid signature', async () => {
+            const invalidToken = jwt.sign(
+                { sub: userId, type: 'ACCESS' },
+                'wrong-secret',
+                { expiresIn: '15m' }
+            );
+
+            const response = await request(app)
+                .get('/api/auth/me')
+                .set('Authorization', `Bearer ${invalidToken}`);
+
+            expect(response.statusCode).toBe(401);
+            expect(response.body.error.code).toBe('INVALID_TOKEN');
+        });
+
+        it('should return 401 if refresh token is used instead of access token', async () => {
+            const refreshToken = jwt.sign(
+                { sub: userId, type: 'REFRESH' },
+                process.env.JWT_ACCESS_SECRET || 'your-default-access-secret',
+                { expiresIn: '7d' }
+            );
+
+            const response = await request(app)
+                .get('/api/auth/me')
+                .set('Authorization', `Bearer ${refreshToken}`);
+
+            expect(response.statusCode).toBe(401);
+            expect(response.body.error.code).toBe('INVALID_TOKEN_TYPE');
+        });
+    });
 });
