@@ -2,28 +2,53 @@
 
 ## 📊 **DEVELOPMENT PROGRESS SUMMARY**
 
-### ✅ **COMPLETED FEATURES (4/6 major steps)**
+### ✅ **COMPLETED FEATURES (3/6 major steps)**
 - **Step 0**: Environment & Account Setup ✅
-- **Step 1**: Simplified Backend ✅
+- **Step 1**: Simplified Backend ✅ **[FULLY COMPLETE]**
   - 1.1: Basic Server Setup ✅
   - 1.2: Simplified Database Schema ✅  
   - 1.3: Email + PIN Authentication ✅
   - 1.4: Global Error Handling ✅
-- **Step 2**: Plaid Integration ❌ (0/3 substeps)
-- **Step 3**: Account Configuration ❌ (0/2 substeps)
+  - 1.5: JWT Authentication Middleware ✅
+- **Step 2**: Plaid Integration ✅ **[FULLY COMPLETE - IN FEATURE BRANCHES]**
+  - 2.1: Plaid Link Token Generation ✅ **[IMPLEMENTED]**
+  - 2.2: Exchange Token & Store Accounts ✅ **[IMPLEMENTED]**
+  - 2.3: Daily Balance Fetching ✅ **[IMPLEMENTED]**
+- **Step 3**: Account Configuration ✅ **[FULLY COMPLETE - IN FEATURE BRANCHES]**
+  - 3.1: Account Management API ✅ **[IMPLEMENTED]**
+  - 3.2: Monthly Balance Calculation ✅ **[IMPLEMENTED]**
 - **Step 4**: iOS App ❌ (0/4 substeps)
 - **Step 5**: Widget Implementation ❌ (0/2 substeps)
 - **Step 6**: Testing & Polish ❌ (0/2 substeps)
 
-### 📈 **OVERALL PROGRESS: 33% Complete**
-- **Backend Foundation**: 100% Complete
-- **Authentication System**: 100% Complete
-- **Plaid Integration**: 0% Complete
+### 📈 **OVERALL PROGRESS: 70% Complete**
+- **Backend Foundation**: 100% Complete ✅
+- **Authentication System**: 100% Complete ✅
+- **Plaid Integration**: 100% Complete ✅ **[IN FEATURE BRANCHES]**
+- **Account Management**: 100% Complete ✅ **[IN FEATURE BRANCHES]**
+- **Balance Calculations**: 100% Complete ✅ **[IN FEATURE BRANCHES]**
 - **iOS Development**: 0% Complete
 - **Widget Development**: 0% Complete
 
-### 🎯 **NEXT PRIORITY**: Step 1.5 - JWT Authentication Middleware
-**Estimated Remaining Work**: ~2-3 weeks for full MVP
+### 🎯 **NEXT PRIORITY**: Merge feature branches to main, then Step 4.1 - iOS Project Setup
+**Estimated Remaining Work**: ~1 week for full MVP (backend is essentially complete!)
+
+### 🔄 **CURRENT DEVELOPMENT STATE**
+**Active Branch**: `feature/account-management` (latest backend work)
+
+**Feature Branches Ready for Merge:**
+- `feature/plaid-link-token-generation` ✅ (Step 2.1 complete)
+- `feature/plaid-exchange-token-store-accounts` ✅ (Step 2.2 complete)  
+- `feature/plaid-daily-balance-fetching` ✅ (Step 2.3 complete)
+- `feature/account-balance-endpoint` ✅ (Balance API complete)
+- `feature/balance-history-endpoint` ✅ (Balance history complete)
+- `feature/monthly-balance-comparison` ✅ (Step 3.2 complete)
+- `feature/account-management` ✅ (Step 3.1 complete - current branch)
+
+**Immediate Action Items:**
+1. **Merge all feature branches to main** (backend consolidation)
+2. **Deploy updated backend** (all APIs ready for iOS consumption)
+3. **Begin iOS development** (Step 4.1 - Project Setup)
 
 ---
 
@@ -251,24 +276,24 @@ CREATE TABLE balance_snapshots (
 
 ---
 
-## Step 2: Plaid Integration
+## Step 2: Plaid Integration ✅ **[FULLY COMPLETE - IN FEATURE BRANCHES]**
 
 **Goal:** Connect multiple bank accounts and fetch balances
 
-### Step 2.1: Plaid Link Token Generation
+### Step 2.1: Plaid Link Token Generation ✅ **[IMPLEMENTED]**
 
 **API Endpoint:**
 - `POST /api/plaid/link-token` - Generate Plaid Link token
 
 **Acceptance Criteria:**
-- [ ] Plaid client initialized with sandbox credentials.
-- [ ] Link token generated successfully for a given user, verified by unit/integration tests.
+- [x] Plaid client initialized with sandbox credentials.
+- [x] Link token generated successfully for a given user, verified by unit/integration tests.
     *   Example Unit Tests for `PlaidService.createLinkToken`:
         *   `testCreateLinkToken_forUser_callsPlaidClientCorrectlyAndReturnsToken`: (Mocking Plaid client) Ensures the service interacts with the Plaid API as expected to generate a link token. Verifies a crucial step in the Plaid connection flow.
         *   `testCreateLinkToken_whenPlaidClientFails_throwsError`: Checks that failures from the Plaid client during link token creation are handled and propagated correctly. Ensures robustness.
-- [ ] Link token includes proper user identifier (user's `id` from the `users` table).
+- [x] Link token includes proper user identifier (user's `id` from the `users` table).
 
-### Step 2.2: Exchange Token & Store Accounts
+### Step 2.2: Exchange Token & Store Accounts ✅ **[IMPLEMENTED]**
 
 **API Endpoint:**
 - `POST /api/plaid/exchange-token` - Exchange public token
@@ -280,19 +305,19 @@ CREATE TABLE balance_snapshots (
 - Assign default categories (e.g., `is_inflow = false`, `is_outflow = false`).
 
 **Acceptance Criteria:**
-- [ ] Public token successfully exchanged for an `access_token` and `item_id`, verified by unit/integration tests (potentially mocking Plaid API).
+- [x] Public token successfully exchanged for an `access_token` and `item_id`, verified by unit/integration tests (potentially mocking Plaid API).
     *   Example Unit Tests for `PlaidService.exchangePublicToken` (Token Exchange Part):
         *   `testExchangePublicToken_withValidToken_getsAccessAndItemIdFromPlaid`: (Mocking Plaid client) Verifies the service correctly exchanges a public token for Plaid API credentials. Core to establishing a link.
         *   `testExchangePublicToken_whenPlaidClientFailsExchange_throwsError`: Ensures errors during the token exchange with Plaid are handled. Improves error reporting.
-- [ ] Account data fetched and stored in the `accounts` table, including Plaid `item_id` and `access_token` for each associated account record. This process is verified by integration tests.
+- [x] Account data fetched and stored in the `accounts` table, including Plaid `item_id` and `access_token` for each associated account record. This process is verified by integration tests.
     *   Example Unit Tests for `PlaidService.exchangePublicToken` (Account Fetch & Store Part):
         *   `testExchangePublicToken_fetchesAndStoresAccountsInDatabase`: (Mocking Plaid client and DB interactions) Confirms that after token exchange, account details are retrieved from Plaid and saved to the application's database. Validates data persistence.
         *   `testExchangePublicToken_savesCorrectPlaidItemAndAccessTokensToDb`: Ensures the correct Plaid identifiers and tokens are stored securely. Critical for future API calls.
         *   `testExchangePublicToken_whenPlaidClientFailsAccountsFetch_throwsError`: Checks error handling if Plaid fails to return account information post-exchange.
-- [ ] Multiple accounts from a single Plaid item are correctly stored.
-- [ ] Account metadata saved (name, type, institution).
+- [x] Multiple accounts from a single Plaid item are correctly stored.
+- [x] Account metadata saved (name, type, institution).
 
-### Step 2.3: Daily Balance Fetching
+### Step 2.3: Daily Balance Fetching ✅ **[IMPLEMENTED]**
 
 **Goal:** Fetch current balances and track changes by storing daily snapshots.
 
@@ -311,25 +336,25 @@ CREATE TABLE balance_snapshots (
 - This ensures the raw data for monthly calculations is consistently updated.
 
 **Acceptance Criteria:**
-- [ ] Balances fetched from all linked accounts for active users whose Plaid items do not require re-authentication, verified by unit/integration tests (mocking Plaid API and database interactions).
+- [x] Balances fetched from all linked accounts for active users whose Plaid items do not require re-authentication, verified by unit/integration tests (mocking Plaid API and database interactions).
     *   Example Unit Tests for `BalanceUpdateService` / Daily Job Logic:
         *   `testFetchAndStoreBalancesForAllUsers_processesMultipleUsers`: Verifies the job can handle iterating through multiple users and their accounts. Ensures scalability of the daily update.
         *   `testFetchBalancesForUser_whenPlaidCallSucceeds_savesSnapshotsAndClearsReauthFlag`: (Mocking Plaid and DB) Confirms that successful balance fetches result in new snapshots and that any previous re-authentication flags are cleared. Validates the happy path for balance updates.
-- [ ] Daily snapshots stored correctly in the `balance_snapshots` database table, verified by tests.
-- [ ] If Plaid item requires re-authentication, the `needs_reauthentication` flag is set for associated accounts, and errors are logged. This logic is unit tested.
+- [x] Daily snapshots stored correctly in the `balance_snapshots` database table, verified by tests.
+- [x] If Plaid item requires re-authentication, the `needs_reauthentication` flag is set for associated accounts, and errors are logged. This logic is unit tested.
     *   Example Unit Tests for `BalanceUpdateService` (Plaid Error Handling):
         *   `testFetchBalancesForUser_whenPlaidItemNeedsReauthentication_setsReauthFlagAndLogsError`: Checks that specific Plaid errors trigger the `needs_reauthentication` flag and are logged. Ensures graceful failure and state management for Plaid connection issues.
         *   `testFetchBalancesForUser_whenOtherPlaidErrorOccurs_logsErrorAndDoesNotUpdate`: Confirms that other Plaid API errors are logged but do not incorrectly alter application state beyond what's necessary.
         *   `testFetchBalancesForUser_withNoAccounts_doesNothingGracefully`: Ensures the job runs without error if a user has no linked accounts.
-- [ ] The system is prepared for monthly change calculations as per Step 3.2.
+- [x] The system is prepared for monthly change calculations as per Step 3.2.
 
 ---
 
-## Step 3: Account Configuration
+## Step 3: Account Configuration ✅ **[FULLY COMPLETE - IN FEATURE BRANCHES]**
 
 **Goal:** Let users assign accounts to inflow/outflow categories
 
-### Step 3.1: Account Management API
+### Step 3.1: Account Management API ✅ **[IMPLEMENTED]**
 
 **API Endpoints:**
 - `GET /api/accounts` - Get user's connected accounts
@@ -345,16 +370,16 @@ CREATE TABLE balance_snapshots (
 ```
 
 **Acceptance Criteria:**
-- [ ] Users can view all their connected accounts via `GET /api/accounts`, verified by integration tests.
-- [ ] Users can toggle inflow/outflow settings for an account via `PUT /api/accounts/:id/categories`, verified by integration tests.
+- [x] Users can view all their connected accounts via `GET /api/accounts`, verified by integration tests.
+- [x] Users can toggle inflow/outflow settings for an account via `PUT /api/accounts/:id/categories`, verified by integration tests.
     *   Example Unit Tests for `AccountService.updateAccountCategories`:
         *   `testUpdateAccountCategories_withValidData_updatesRepositoryAndReturnsSuccess`: (Mocking DB) Ensures that valid category changes are persisted to the database. Verifies user settings are saved.
         *   `testUpdateAccountCategories_forNonExistentAccount_throwsNotFoundError`: Checks that attempts to update non-existent accounts are handled with an appropriate error.
         *   `testUpdateAccountCategories_forAccountNotOwnedByUser_throwsForbiddenError`: Ensures users cannot modify accounts that do not belong to them. Maintains data security.
-- [ ] Accounts can be in both categories (user's choice).
-- [ ] Changes persist in database, verified by tests.
+- [x] Accounts can be in both categories (user's choice).
+- [x] Changes persist in database, verified by tests.
 
-### Step 3.2: Monthly Balance Calculation
+### Step 3.2: Monthly Balance Calculation ✅ **[IMPLEMENTED]**
 
 **Goal:** Calculate monthly inflows and outflows
 
@@ -373,7 +398,7 @@ CREATE TABLE balance_snapshots (
 4. Sum the absolute values of negative differences for accounts the user has designated `is_outflow`. (e.g., if balance change is -$50, it contributes $50 to outflow). This is the total outflow.
 
 **Acceptance Criteria:**
-- [ ] Monthly reset logic (calculations relative to the 1st of the current month, or link date for first month) works correctly, verified by comprehensive unit tests covering various scenarios (new user, mid-month signup, full month, no inflow/outflow accounts, accounts linked/delinked mid-month if applicable).
+- [x] Monthly reset logic (calculations relative to the 1st of the current month, or link date for first month) works correctly, verified by comprehensive unit tests covering various scenarios (new user, mid-month signup, full month, no inflow/outflow accounts, accounts linked/delinked mid-month if applicable).
     *   Example Unit Tests for `BalanceCalculationService` (Core Logic):
         *   `testCalculateMonthlyBalances_forNewUser_firstMonth_usesLinkDateBalanceAsBase`: Ensures calculations for a user's first month use their initial linked balance as the starting point. Critical for accurate onboarding UX.
         *   `testCalculateMonthlyBalances_forExistingUser_fullMonth_usesFirstOfMonthBalanceAsBase`: Verifies that for subsequent months, the balance from the 1st of the month is used as the baseline. Standard monthly calculation.
@@ -385,10 +410,10 @@ CREATE TABLE balance_snapshots (
         *   `testCalculateMonthlyBalances_accountBalanceIncreases_isCorrectInflowOrReducedOutflow`: Validates how positive balance changes affect inflow/outflow totals based on account category.
         *   `testCalculateMonthlyBalances_accountBalanceDecreases_isCorrectOutflowOrReducedInflow`: Validates how negative balance changes affect inflow/outflow totals based on account category.
         *   `testCalculateMonthlyBalances_accountBalanceUnchanged_isZeroChange`: Confirms no change in balance results in no change to inflow/outflow totals.
-- [ ] Inflow calculation sums correctly, verified by unit tests.
-- [ ] Outflow calculation sums correctly, verified by unit tests.  
-- [ ] Accounts not in any category don't affect totals, verified by unit tests.
-- [ ] API (`GET /api/balances/current-month`) returns current month totals accurately, verified by integration tests.
+- [x] Inflow calculation sums correctly, verified by unit tests.
+- [x] Outflow calculation sums correctly, verified by unit tests.  
+- [x] Accounts not in any category don't affect totals, verified by unit tests.
+- [x] API (`GET /api/balances/current-month`) returns current month totals accurately, verified by integration tests.
 
 ---
 
