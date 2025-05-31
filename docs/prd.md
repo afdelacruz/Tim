@@ -44,10 +44,10 @@ Tim is a discrete iOS widget that shows monthly inflows and outflows based on ac
 4. Choose database provider (PostgreSQL)
 
 **Acceptance Criteria:**
-- [ ] Plaid sandbox credentials obtained
-- [ ] Apple Developer account active
-- [ ] Backend hosting service selected
-- [ ] Database instance created
+- [x] Plaid sandbox credentials obtained
+- [x] Apple Developer account active
+- [x] Backend hosting service selected
+- [x] Database instance created
 
 ---
 
@@ -82,11 +82,11 @@ backend/
 - Basic error handling middleware
 
 **Acceptance Criteria:**
-- [ ] Server starts on specified port
-- [ ] Environment variables loaded correctly
-- [ ] CORS configured for iOS requests
-- [ ] Basic health check endpoint (`/health`) responds with 200, verified by an automated test.
-- [ ] All API error responses follow a consistent JSON format, and this error handling is testable: 
+- [x] Server starts on specified port
+- [x] Environment variables loaded correctly
+- [x] CORS configured for iOS requests
+- [x] Basic health check endpoint (`/health`) responds with 200, verified by an automated test.
+- [x] All API error responses follow a consistent JSON format, and this error handling is testable: 
   `{ "success": false, "error": { "code": "ERROR_CODE_STRING", "message": "Human-readable description." } }`
     *   Example Unit Tests for Error Handling Middleware:
         *   `testErrorMiddleware_handlesGenericError_returnsCorrectFormatAndStatusCode`: Verifies that unexpected errors are caught and formatted according to the standard error JSON structure. Ensures consistent error reporting.
