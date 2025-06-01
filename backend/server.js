@@ -5,6 +5,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/auth');
 const plaidRoutes = require('./routes/plaid');
 const balanceRoutes = require('./routes/balances');
+const balanceHistoryRoutes = require('./routes/balanceHistory');
 const { globalErrorHandler } = require('./utils/errorHandler');
 
 const app = express();
@@ -49,6 +50,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/plaid', plaidRoutes);
 app.use('/api/balances', balanceRoutes);
+app.use('/api/balance-history', balanceHistoryRoutes);
 
 // 404 handler for unmatched routes
 app.use((req, res, next) => {
