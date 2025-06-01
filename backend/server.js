@@ -85,6 +85,7 @@ if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`Server listening on port ${PORT}`);
         console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`Deployment timestamp: ${new Date().toISOString()}`);
     });
 }
 
