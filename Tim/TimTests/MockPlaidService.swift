@@ -8,6 +8,12 @@ class MockPlaidService: PlaidServiceProtocol {
     var shouldThrowError = false
     var errorToThrow: PlaidError = .unknown
     
+    // Specific control for different operations
+    var shouldFailFetchAccounts = false
+    var shouldSucceedUpdateCategories = true
+    var shouldFailUpdateCategories = false
+    var fetchAccountsDelay: TimeInterval = 0
+    
     // MARK: - Mock Response Properties
     
     var mockLinkTokenResponse: LinkTokenResponse?
@@ -51,17 +57,28 @@ class MockPlaidService: PlaidServiceProtocol {
             throw errorToThrow
         }
         
-        guard let response = mockExchangeTokenResponse else {
-            throw PlaidError.exchangeFailed
+        if let response = mockExchangeTokenResponse {
+            return response
         }
         
-        return response
+        // Default mock response
+        let mockData = ExchangeTokenData(
+            accessToken: "mock_access_token",
+            itemId: "mock_item_id",
+            accounts: []
+        )
+        
+        return ExchangeTokenResponse(success: true, data: mockData)
     }
     
     func fetchAccounts() async throws -> [PlaidAccount] {
         fetchAccountsCalled = true
         
-        if shouldThrowError {
+        if fetchAccountsDelay > 0 {
+            try await Task.sleep(nanoseconds: UInt64(fetchAccountsDelay * 1_000_000_000))
+        }
+        
+        if shouldThrowError || shouldFailFetchAccounts {
             throw errorToThrow
         }
         
@@ -74,8 +91,12 @@ class MockPlaidService: PlaidServiceProtocol {
         lastIsInflow = isInflow
         lastIsOutflow = isOutflow
         
-        if shouldThrowError {
+        if shouldThrowError || shouldFailUpdateCategories {
             throw errorToThrow
+        }
+        
+        if shouldSucceedUpdateCategories {
+            return UpdateCategoriesResponse(success: true, message: "Categories updated successfully")
         }
         
         guard let response = mockUpdateCategoriesResponse else {
@@ -90,6 +111,10 @@ class MockPlaidService: PlaidServiceProtocol {
     func reset() {
         shouldThrowError = false
         errorToThrow = .unknown
+        shouldFailFetchAccounts = false
+        shouldSucceedUpdateCategories = true
+        shouldFailUpdateCategories = false
+        fetchAccountsDelay = 0
         
         mockLinkTokenResponse = nil
         mockExchangeTokenResponse = nil

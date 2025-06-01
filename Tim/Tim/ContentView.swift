@@ -48,6 +48,13 @@ struct MainAppView: View {
                     Text("Accounts")
                 }
             
+            // Categories Tab
+            CategoryConfigView()
+                .tabItem {
+                    Image(systemName: "slider.horizontal.3")
+                    Text("Categories")
+                }
+            
             // Profile Tab
             ProfileView(loginViewModel: loginViewModel)
                 .tabItem {
@@ -98,6 +105,19 @@ struct DashboardView: View {
                         .cornerRadius(12)
                     }
                     .foregroundColor(.blue)
+                    
+                    NavigationLink(destination: CategoryConfigView()) {
+                        HStack {
+                            Image(systemName: "slider.horizontal.3")
+                            Text("Configure Categories")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                        }
+                        .padding()
+                        .background(Color.green.opacity(0.1))
+                        .cornerRadius(12)
+                    }
+                    .foregroundColor(.green)
                 }
                 .padding(.horizontal)
                 

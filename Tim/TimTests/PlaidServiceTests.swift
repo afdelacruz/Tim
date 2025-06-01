@@ -74,22 +74,29 @@ final class PlaidServiceTests: XCTestCase {
     func testExchangePublicToken_givenPlaidSdkSuccess_callsApiAndHandlesAccountResponse() async throws {
         // Arrange
         let publicToken = "public-sandbox-12345678-1234-1234-1234-123456789012"
-        let expectedAccounts = [
-            PlaidAccount(
-                id: "account-1",
+        let rawAccounts = [
+            PlaidAccountRaw(
+                account_id: "account-1",
                 name: "Chase Checking",
-                accountType: "depository",
-                institutionName: "Chase",
-                isInflow: false,
-                isOutflow: false,
-                needsReauthentication: false,
-                createdAt: Date()
+                official_name: "Chase Premier Plus Checking",
+                type: "depository",
+                subtype: "checking",
+                mask: "0000",
+                balances: PlaidBalances(
+                    available: 1000.0,
+                    current: 1000.0,
+                    iso_currency_code: "USD"
+                )
             )
         ]
+        let exchangeData = ExchangeTokenData(
+            accessToken: "access-sandbox-12345678-1234-1234-1234-123456789012",
+            itemId: "item-sandbox-12345678-1234-1234-1234-123456789012",
+            accounts: rawAccounts
+        )
         let expectedResponse = ExchangeTokenResponse(
             success: true,
-            message: "Accounts linked successfully",
-            accounts: expectedAccounts
+            data: exchangeData
         )
         mockNetworkManager.mockResponse = expectedResponse
         
@@ -98,9 +105,9 @@ final class PlaidServiceTests: XCTestCase {
         
         // Assert
         XCTAssertTrue(response.success)
-        XCTAssertEqual(response.accounts.count, 1)
-        XCTAssertEqual(response.accounts.first?.name, "Chase Checking")
-        XCTAssertEqual(response.accounts.first?.institutionName, "Chase")
+        XCTAssertEqual(response.data.accounts.count, 1)
+        XCTAssertEqual(response.data.accounts.first?.name, "Chase Checking")
+        XCTAssertEqual(response.data.accessToken, "access-sandbox-12345678-1234-1234-1234-123456789012")
         XCTAssertEqual(mockNetworkManager.lastRequestURL?.path, "/api/plaid/exchange-token")
         XCTAssertEqual(mockNetworkManager.lastRequestMethod, "POST")
     }
@@ -141,31 +148,32 @@ final class PlaidServiceTests: XCTestCase {
     
     func testFetchAccounts_whenServiceReturnsData_returnsAccountList() async throws {
         // Arrange
-        let expectedAccounts = [
-            PlaidAccount(
+        let savedAccounts = [
+            SavedPlaidAccount(
                 id: "account-1",
                 name: "Chase Checking",
-                accountType: "depository",
+                type: "depository",
                 institutionName: "Chase",
-                isInflow: true,
-                isOutflow: false,
-                needsReauthentication: false,
-                createdAt: Date()
+                currentBalance: 1000.0,
+                lastUpdated: nil,
+                needsReauth: false,
+                createdAt: "2024-01-01T00:00:00.000Z"
             ),
-            PlaidAccount(
+            SavedPlaidAccount(
                 id: "account-2",
                 name: "Chase Credit",
-                accountType: "credit",
+                type: "credit",
                 institutionName: "Chase",
-                isInflow: false,
-                isOutflow: true,
-                needsReauthentication: false,
-                createdAt: Date()
+                currentBalance: -500.0,
+                lastUpdated: nil,
+                needsReauth: false,
+                createdAt: "2024-01-01T00:00:00.000Z"
             )
         ]
+        let accountsData = AccountsData(accounts: savedAccounts, count: 2)
         let expectedResponse = AccountsResponse(
             success: true,
-            accounts: expectedAccounts
+            data: accountsData
         )
         mockNetworkManager.mockResponse = expectedResponse
         
@@ -175,9 +183,9 @@ final class PlaidServiceTests: XCTestCase {
         // Assert
         XCTAssertEqual(accounts.count, 2)
         XCTAssertEqual(accounts[0].name, "Chase Checking")
-        XCTAssertEqual(accounts[0].isInflow, true)
+        XCTAssertEqual(accounts[0].accountType, "Depository")
         XCTAssertEqual(accounts[1].name, "Chase Credit")
-        XCTAssertEqual(accounts[1].isOutflow, true)
+        XCTAssertEqual(accounts[1].accountType, "Credit")
         XCTAssertEqual(mockNetworkManager.lastRequestURL?.path, "/api/accounts")
         XCTAssertEqual(mockNetworkManager.lastRequestMethod, "GET")
     }
@@ -200,9 +208,10 @@ final class PlaidServiceTests: XCTestCase {
     
     func testFetchAccounts_withNoAccounts_returnsEmptyArray() async throws {
         // Arrange
+        let accountsData = AccountsData(accounts: [], count: 0)
         let expectedResponse = AccountsResponse(
             success: true,
-            accounts: []
+            data: accountsData
         )
         mockNetworkManager.mockResponse = expectedResponse
         

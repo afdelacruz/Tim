@@ -143,10 +143,29 @@ final class PlaidLinkViewModelTests: XCTestCase {
                 createdAt: Date()
             )
         ]
+        let rawAccounts = [
+            PlaidAccountRaw(
+                account_id: "account-1",
+                name: "Chase Checking",
+                official_name: "Chase Premier Plus Checking",
+                type: "depository",
+                subtype: "checking",
+                mask: "0000",
+                balances: PlaidBalances(
+                    available: 1000.0,
+                    current: 1000.0,
+                    iso_currency_code: "USD"
+                )
+            )
+        ]
+        let exchangeData = ExchangeTokenData(
+            accessToken: "access-sandbox-12345678-1234-1234-1234-123456789012",
+            itemId: "item-sandbox-12345678-1234-1234-1234-123456789012",
+            accounts: rawAccounts
+        )
         let exchangeResponse = ExchangeTokenResponse(
             success: true,
-            message: "Accounts linked successfully",
-            accounts: expectedAccounts
+            data: exchangeData
         )
         mockPlaidService.mockExchangeTokenResponse = exchangeResponse
         mockPlaidService.mockAccounts = expectedAccounts
