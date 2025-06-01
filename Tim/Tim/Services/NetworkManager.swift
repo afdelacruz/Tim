@@ -101,7 +101,12 @@ class NetworkManager: NetworkManagerProtocol {
             }
             
             let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
+            
+            // Custom date formatter for the backend's date format
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+            dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+            decoder.dateDecodingStrategy = .formatted(dateFormatter)
             
             do {
                 let result = try decoder.decode(T.self, from: data)
