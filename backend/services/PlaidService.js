@@ -25,7 +25,7 @@ class PlaidService {
                 },
                 client_name: 'Tim',
                 products: [Products.Transactions],
-                country_codes: [CountryCodes.US],
+                country_codes: ['US'], // Use string instead of enum
                 language: 'en'
             };
 
