@@ -18,21 +18,21 @@ const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
 
 if (missingEnvVars.length > 0) {
     console.error('Missing required environment variables:', missingEnvVars);
-    process.exit(1);
+    console.error('Server will start but Plaid functionality will not work until these are set.');
+    // Temporarily comment out process.exit(1) for debugging
+    // process.exit(1);
 }
 
-// Log loaded environment variables for verification (development only)
-if (process.env.NODE_ENV !== 'production') {
-    console.log('--- Loaded Environment Variables ---');
-    console.log('PORT:', process.env.PORT);
-    console.log('PLAID_CLIENT_ID:', process.env.PLAID_CLIENT_ID ? 'Loaded' : 'NOT LOADED');
-    console.log('PLAID_SECRET:', process.env.PLAID_SECRET ? 'Loaded' : 'NOT LOADED');
-    console.log('PLAID_ENV:', process.env.PLAID_ENV);
-    console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Loaded - ' + process.env.DATABASE_URL.substring(0, process.env.DATABASE_URL.indexOf('@') + 1) + '...' : 'NOT LOADED');
-    console.log('JWT_ACCESS_SECRET:', process.env.JWT_ACCESS_SECRET ? 'Loaded' : 'NOT LOADED');
-    console.log('JWT_REFRESH_SECRET:', process.env.JWT_REFRESH_SECRET ? 'Loaded' : 'NOT LOADED');
-    console.log('----------------------------------');
-}
+// Log loaded environment variables for verification (always show for debugging)
+console.log('--- Loaded Environment Variables ---');
+console.log('PORT:', process.env.PORT);
+console.log('PLAID_CLIENT_ID:', process.env.PLAID_CLIENT_ID ? 'Loaded' : 'NOT LOADED');
+console.log('PLAID_SECRET:', process.env.PLAID_SECRET ? 'Loaded' : 'NOT LOADED');
+console.log('PLAID_ENV:', process.env.PLAID_ENV);
+console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Loaded - ' + process.env.DATABASE_URL.substring(0, process.env.DATABASE_URL.indexOf('@') + 1) + '...' : 'NOT LOADED');
+console.log('JWT_ACCESS_SECRET:', process.env.JWT_ACCESS_SECRET ? 'Loaded' : 'NOT LOADED');
+console.log('JWT_REFRESH_SECRET:', process.env.JWT_REFRESH_SECRET ? 'Loaded' : 'NOT LOADED');
+console.log('----------------------------------');
 
 // Middleware
 app.use(cors()); // Enable CORS for all routes
