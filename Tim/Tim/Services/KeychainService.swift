@@ -7,6 +7,9 @@ protocol KeychainServiceProtocol {
     func getAccessToken() -> String?
     func getRefreshToken() -> String?
     func clearTokens()
+    func saveAccessToken(_ token: String)
+    func deleteAccessToken()
+    func deleteRefreshToken()
 }
 
 class KeychainService: KeychainServiceProtocol {
@@ -37,6 +40,18 @@ class KeychainService: KeychainServiceProtocol {
     
     func clearTokens() {
         delete(forKey: accessTokenKey)
+        delete(forKey: refreshTokenKey)
+    }
+    
+    func saveAccessToken(_ token: String) {
+        storeAccessToken(token)
+    }
+    
+    func deleteAccessToken() {
+        delete(forKey: accessTokenKey)
+    }
+    
+    func deleteRefreshToken() {
         delete(forKey: refreshTokenKey)
     }
     

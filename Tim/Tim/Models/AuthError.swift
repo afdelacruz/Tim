@@ -7,6 +7,7 @@ enum AuthError: Error, Equatable {
     case emailAlreadyExists
     case networkError
     case decodingError
+    case tokenExpired
     case unknown
     
     var localizedDescription: String {
@@ -23,6 +24,8 @@ enum AuthError: Error, Equatable {
             return "Network connection error. Please check your internet connection and try again."
         case .decodingError:
             return "Unable to process server response"
+        case .tokenExpired:
+            return "Session expired. Please log in again."
         case .unknown:
             return "An unexpected error occurred"
         }

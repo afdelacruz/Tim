@@ -74,26 +74,7 @@ class AuthService: AuthServiceProtocol {
         }
     }
     
-    func refreshToken(refreshToken: String) async throws -> AuthResponse {
-        guard let url = NetworkManager.shared.buildURL(path: "/api/auth/refresh-token") else {
-            throw NetworkError.invalidURL
-        }
-        
-        let requestBody = RefreshTokenRequest(refreshToken: refreshToken)
-        let bodyData = try JSONEncoder().encode(requestBody)
-        
-        do {
-            let response: AuthResponse = try await networkManager.request(
-                url: url,
-                method: .POST,
-                body: bodyData,
-                headers: nil
-            )
-            return response
-        } catch let error as NetworkError {
-            throw mapNetworkError(error)
-        }
-    }
+
     
     // MARK: - Private Methods
     
@@ -112,23 +93,7 @@ class AuthService: AuthServiceProtocol {
         }
     }
     
-    func getCurrentUser() async throws -> User {
-        guard let url = NetworkManager.shared.buildURL(path: "/api/auth/me") else {
-            throw NetworkError.invalidURL
-        }
-        
-        do {
-            let user: User = try await networkManager.request(
-                url: url,
-                method: .GET,
-                body: nil,
-                headers: nil
-            )
-            return user
-        } catch let error as NetworkError {
-            throw mapNetworkError(error)
-        }
-    }
+
     
     private func mapNetworkError(_ error: NetworkError) -> AuthError {
         switch error {
@@ -155,7 +120,7 @@ class AuthService: AuthServiceProtocol {
             throw AuthError.tokenExpired
         }
         
-        let response = try await refreshToken(refreshToken: refreshToken)
+        let response = try await refreshTokenRequest(refreshToken: refreshToken)
         
         if let newAccessToken = response.accessToken {
             keychainService.saveAccessToken(newAccessToken)
@@ -173,7 +138,7 @@ class AuthService: AuthServiceProtocol {
         }
     }
     
-    private func refreshToken(refreshToken: String) async throws -> AuthResponse {
+    private func refreshTokenRequest(refreshToken: String) async throws -> AuthResponse {
         guard let url = NetworkManager.shared.buildURL(path: "/api/auth/refresh-token") else {
             throw NetworkError.invalidURL
         }
