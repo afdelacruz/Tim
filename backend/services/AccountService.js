@@ -41,7 +41,7 @@ class AccountService {
                     lastUpdated: latestSnapshot ? latestSnapshot.snapshot_date : null,
                     needsReauth: account.needs_reauth || false,
                     createdAt: account.created_at,
-                    updatedAt: account.updated_at
+                    updatedAt: account.created_at
                 };
             })
         );
@@ -141,7 +141,7 @@ class AccountService {
             lastUpdated: latestSnapshot ? latestSnapshot.snapshot_date : null,
             needsReauth: account.needs_reauth || false,
             createdAt: account.created_at,
-            updatedAt: account.updated_at
+            updatedAt: account.created_at
         };
     }
 
@@ -173,8 +173,7 @@ class AccountService {
         // Update the account categories
         const updates = {
             is_inflow,
-            is_outflow,
-            updated_at: new Date()
+            is_outflow
         };
 
         await this.accountRepository.updateAccount(accountId, updates);
@@ -214,8 +213,7 @@ class AccountService {
 
         // Deactivate the account
         await this.accountRepository.updateAccount(accountId, { 
-            is_active: false,
-            updated_at: new Date()
+            is_active: false
         });
 
         return {

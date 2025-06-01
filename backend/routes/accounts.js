@@ -93,14 +93,23 @@ router.put('/:id', authenticateToken, async (req, res) => {
  */
 router.put('/:id/categories', authenticateToken, async (req, res) => {
     try {
+        console.log('=== Category Update Debug ===');
+        console.log('User ID:', req.user.id);
+        console.log('Account ID:', req.params.id);
+        console.log('Request Body:', req.body);
+        
         const userId = req.user.id;
         const accountId = req.params.id;
         const categoryUpdates = req.body;
 
         const result = await accountService.updateAccountCategories(accountId, userId, categoryUpdates);
 
+        console.log('Update successful:', result);
         res.json(result);
     } catch (error) {
+        console.error('=== Category Update Error ===');
+        console.error('Error details:', error);
+        console.error('Error stack:', error.stack);
         handleRouteError(res, error, 'Failed to update account categories');
     }
 });
@@ -123,6 +132,40 @@ router.delete('/:id', authenticateToken, async (req, res) => {
         });
     } catch (error) {
         handleRouteError(res, error, 'Failed to deactivate account');
+    }
+});
+
+/**
+ * GET /api/accounts/debug/schema
+ * Debug endpoint to check database schema
+ */
+router.get('/debug/schema', authenticateToken, async (req, res) => {
+    try {
+        const db = require('../db');
+        
+        // Check if columns exist
+        const schemaQuery = `
+            SELECT column_name, data_type, is_nullable 
+            FROM information_schema.columns 
+            WHERE table_name = 'accounts' 
+            ORDER BY ordinal_position;
+        `;
+        
+        const { rows } = await db.query(schemaQuery);
+        
+        res.json({
+            success: true,
+            columns: rows
+        });
+    } catch (error) {
+        console.error('Schema check error:', error);
+        res.status(500).json({
+            success: false,
+            error: {
+                code: 'SCHEMA_CHECK_ERROR',
+                message: error.message
+            }
+        });
     }
 });
 

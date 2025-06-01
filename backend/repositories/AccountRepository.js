@@ -54,7 +54,7 @@ class AccountRepository {
     }
 
     async updateAccount(accountId, updates) {
-        const allowedFields = ['nickname', 'is_active', 'is_inflow', 'is_outflow', 'updated_at'];
+        const allowedFields = ['nickname', 'is_active', 'is_inflow', 'is_outflow'];
         const updateFields = [];
         const values = [];
         let paramIndex = 1;
@@ -69,13 +69,6 @@ class AccountRepository {
 
         if (updateFields.length === 0) {
             throw new Error('No valid fields to update');
-        }
-
-        // Add updated_at if not already included
-        if (!updates.updated_at) {
-            updateFields.push(`updated_at = $${paramIndex}`);
-            values.push(new Date());
-            paramIndex++;
         }
 
         values.push(accountId); // Add accountId as the last parameter
