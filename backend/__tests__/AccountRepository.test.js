@@ -115,6 +115,26 @@ describe('AccountRepository', () => {
         });
     });
 
+    describe('findAllActiveAccounts', () => {
+        it('testFindAllActiveAccounts_returnsOnlyActiveAccounts', async () => {
+            // Create active accounts
+            const acc1 = await AccountRepository.saveAccount(testUser.id, accountData1.plaidItemId, accountData1.plaidAccessToken, accountData1.plaidAccountId, accountData1.accountName, accountData1.accountType, accountData1.institutionName);
+            const acc2 = await AccountRepository.saveAccount(testUser.id, accountData3.plaidItemId, accountData3.plaidAccessToken, accountData3.plaidAccountId, accountData3.accountName, accountData3.accountType, accountData3.institutionName);
+
+            // Set one item to need re-authentication
+            await AccountRepository.setNeedsReauthentication(accountData1.plaidItemId, true);
+
+            // Test finding only active accounts
+            const activeAccounts = await AccountRepository.findAllActiveAccounts();
+
+            // Should only return accounts that don't need re-authentication
+            expect(activeAccounts).toBeDefined();
+            expect(activeAccounts.length).toBe(1);
+            expect(activeAccounts[0].plaid_account_id).toBe(accountData3.plaidAccountId);
+            expect(activeAccounts[0].needs_reauthentication).toBe(false);
+        });
+    });
+
     describe('setNeedsReauthentication', () => {
         it('testSetNeedsReauthentication_forItem_updatesFlagsOnAssociatedAccounts', async () => {
             const acc1 = await AccountRepository.saveAccount(testUser.id, accountData1.plaidItemId, accountData1.plaidAccessToken, accountData1.plaidAccountId, accountData1.accountName, accountData1.accountType, accountData1.institutionName);
