@@ -102,11 +102,39 @@ class NetworkManager: NetworkManagerProtocol {
             
             let decoder = JSONDecoder()
             
-            // Custom date formatter for the backend's date format
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-            dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-            decoder.dateDecodingStrategy = .formatted(dateFormatter)
+            // Custom date decoding strategy to handle backend's date format
+            decoder.dateDecodingStrategy = .custom { decoder in
+                let container = try decoder.singleValueContainer()
+                let dateString = try container.decode(String.self)
+                
+                // Try ISO8601 with milliseconds first
+                let formatter1 = DateFormatter()
+                formatter1.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                formatter1.timeZone = TimeZone(abbreviation: "UTC")
+                
+                if let date = formatter1.date(from: dateString) {
+                    return date
+                }
+                
+                // Try ISO8601 without milliseconds as fallback
+                let formatter2 = DateFormatter()
+                formatter2.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+                formatter2.timeZone = TimeZone(abbreviation: "UTC")
+                
+                if let date = formatter2.date(from: dateString) {
+                    return date
+                }
+                
+                // Try standard ISO8601 as final fallback
+                let formatter3 = ISO8601DateFormatter()
+                formatter3.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+                
+                if let date = formatter3.date(from: dateString) {
+                    return date
+                }
+                
+                throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
+            }
             
             do {
                 let result = try decoder.decode(T.self, from: data)
