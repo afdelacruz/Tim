@@ -1,18 +1,27 @@
 import Foundation
 
 protocol AuthServiceProtocol {
+    var accessToken: String? { get }
     func register(email: String, pin: String) async throws -> AuthResponse
     func login(email: String, pin: String) async throws -> AuthResponse
-    func refreshToken(refreshToken: String) async throws -> AuthResponse
-    func getCurrentUser() async throws -> User
+    func logout() async
+    func refreshAccessToken() async throws -> String
+    func ensureValidAccessToken() async throws
 }
 
 class AuthService: AuthServiceProtocol {
     
     private let networkManager: NetworkManagerProtocol
+    private let keychainService: KeychainServiceProtocol
     
-    init(networkManager: NetworkManagerProtocol = NetworkManager.shared) {
+    var accessToken: String? {
+        return keychainService.getAccessToken()
+    }
+    
+    init(networkManager: NetworkManagerProtocol = NetworkManager.shared,
+         keychainService: KeychainServiceProtocol = KeychainService.shared) {
         self.networkManager = networkManager
+        self.keychainService = keychainService
     }
     
     func register(email: String, pin: String) async throws -> AuthResponse {
@@ -135,6 +144,60 @@ class AuthService: AuthServiceProtocol {
             return .networkError
         }
     }
+    
+    func logout() async {
+        keychainService.deleteAccessToken()
+        keychainService.deleteRefreshToken()
+    }
+    
+    func refreshAccessToken() async throws -> String {
+        guard let refreshToken = keychainService.getRefreshToken() else {
+            throw AuthError.tokenExpired
+        }
+        
+        let response = try await refreshToken(refreshToken: refreshToken)
+        
+        if let newAccessToken = response.accessToken {
+            keychainService.saveAccessToken(newAccessToken)
+            return newAccessToken
+        } else {
+            throw AuthError.tokenExpired
+        }
+    }
+    
+    func ensureValidAccessToken() async throws {
+        // For now, we'll assume the token is valid if it exists
+        // In a production app, you'd want to check expiration
+        if accessToken == nil {
+            _ = try await refreshAccessToken()
+        }
+    }
+    
+    private func refreshToken(refreshToken: String) async throws -> AuthResponse {
+        guard let url = NetworkManager.shared.buildURL(path: "/api/auth/refresh-token") else {
+            throw NetworkError.invalidURL
+        }
+        
+        let requestBody = RefreshTokenRequest(refreshToken: refreshToken)
+        let bodyData = try JSONEncoder().encode(requestBody)
+        
+        do {
+            let response: AuthResponse = try await networkManager.request(
+                url: url,
+                method: .POST,
+                body: bodyData,
+                headers: nil
+            )
+            return response
+        } catch let error as NetworkError {
+            throw mapNetworkError(error)
+        }
+    }
+}
+
+// MARK: - Shared Instance
+extension AuthService {
+    static let shared = AuthService()
 }
 
 // MARK: - Request Models

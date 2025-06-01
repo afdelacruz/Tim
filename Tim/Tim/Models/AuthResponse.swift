@@ -1,5 +1,10 @@
 import Foundation
 
+struct ErrorResponse: Codable, Equatable {
+    let code: String
+    let message: String
+}
+
 struct AuthResponse: Codable, Equatable {
     let success: Bool
     let message: String?
