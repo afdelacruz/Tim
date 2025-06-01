@@ -54,7 +54,7 @@ class AccountRepository {
     }
 
     async updateAccount(accountId, updates) {
-        const allowedFields = ['nickname', 'is_active', 'updated_at'];
+        const allowedFields = ['nickname', 'is_active', 'is_inflow', 'is_outflow', 'updated_at'];
         const updateFields = [];
         const values = [];
         let paramIndex = 1;
