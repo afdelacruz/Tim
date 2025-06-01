@@ -4,6 +4,7 @@ protocol AuthServiceProtocol {
     func register(email: String, pin: String) async throws -> AuthResponse
     func login(email: String, pin: String) async throws -> AuthResponse
     func refreshToken(refreshToken: String) async throws -> AuthResponse
+    func getCurrentUser() async throws -> User
 }
 
 class AuthService: AuthServiceProtocol {
@@ -99,6 +100,24 @@ class AuthService: AuthServiceProtocol {
     private func validatePin(_ pin: String) throws {
         if pin.count != 4 || !pin.allSatisfy({ $0.isNumber }) {
             throw AuthError.invalidPin
+        }
+    }
+    
+    func getCurrentUser() async throws -> User {
+        guard let url = NetworkManager.shared.buildURL(path: "/api/auth/me") else {
+            throw NetworkError.invalidURL
+        }
+        
+        do {
+            let user: User = try await networkManager.request(
+                url: url,
+                method: .GET,
+                body: nil,
+                headers: nil
+            )
+            return user
+        } catch let error as NetworkError {
+            throw mapNetworkError(error)
         }
     }
     
