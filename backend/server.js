@@ -1,4 +1,9 @@
-require('dotenv').config();
+// Load environment variables - try .env file first, Railway provides them directly
+try {
+    require('dotenv').config();
+} catch (error) {
+    console.log('No .env file found, using environment variables from platform');
+}
 
 const express = require('express');
 const cors = require('cors');
@@ -26,12 +31,14 @@ if (missingEnvVars.length > 0) {
 // Log loaded environment variables for verification (always show for debugging)
 console.log('--- Loaded Environment Variables ---');
 console.log('PORT:', process.env.PORT);
+console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('PLAID_CLIENT_ID:', process.env.PLAID_CLIENT_ID ? 'Loaded' : 'NOT LOADED');
 console.log('PLAID_SECRET:', process.env.PLAID_SECRET ? 'Loaded' : 'NOT LOADED');
 console.log('PLAID_ENV:', process.env.PLAID_ENV);
 console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Loaded - ' + process.env.DATABASE_URL.substring(0, process.env.DATABASE_URL.indexOf('@') + 1) + '...' : 'NOT LOADED');
 console.log('JWT_ACCESS_SECRET:', process.env.JWT_ACCESS_SECRET ? 'Loaded' : 'NOT LOADED');
 console.log('JWT_REFRESH_SECRET:', process.env.JWT_REFRESH_SECRET ? 'Loaded' : 'NOT LOADED');
+console.log('All env keys:', Object.keys(process.env).filter(key => !key.startsWith('npm_')).sort());
 console.log('----------------------------------');
 
 // Middleware
