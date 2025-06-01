@@ -7,6 +7,7 @@ protocol AuthServiceProtocol {
     func logout() async
     func refreshAccessToken() async throws -> String
     func ensureValidAccessToken() async throws
+    func getCurrentUser() async throws -> User
 }
 
 class AuthService: AuthServiceProtocol {
@@ -135,6 +136,32 @@ class AuthService: AuthServiceProtocol {
         // In a production app, you'd want to check expiration
         if accessToken == nil {
             _ = try await refreshAccessToken()
+        }
+    }
+    
+    func getCurrentUser() async throws -> User {
+        guard let url = NetworkManager.shared.buildURL(path: "/api/auth/me") else {
+            throw NetworkError.invalidURL
+        }
+        
+        guard let accessToken = accessToken else {
+            throw AuthError.unauthorized
+        }
+        
+        let headers = ["Authorization": "Bearer \(accessToken)"]
+        
+        do {
+            let user: User = try await networkManager.request(
+                url: url,
+                method: .GET,
+                body: nil,
+                headers: headers
+            )
+            return user
+        } catch let error as NetworkError {
+            throw mapNetworkError(error)
+        } catch {
+            throw AuthError.networkError
         }
     }
     
