@@ -125,6 +125,10 @@ class AuthService: AuthServiceProtocol {
         switch error {
         case .httpError(401):
             return .unauthorized
+        case .httpError(409):
+            return .emailAlreadyExists
+        case .networkUnavailable:
+            return .networkError
         case .decodingError:
             return .decodingError
         default:

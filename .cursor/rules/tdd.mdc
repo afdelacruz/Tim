@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 # AI Editor Rules: Software Engineering Best Practices (Git & TDD)
 
