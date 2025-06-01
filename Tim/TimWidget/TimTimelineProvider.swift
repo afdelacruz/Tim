@@ -36,9 +36,18 @@ struct TimTimelineProvider: TimelineProvider {
     
     // MARK: - Data Fetching
     private func fetchBalanceEntry() async -> TimWidgetEntry {
+        print("🔄 Widget: Starting balance data fetch...")
+        
         do {
             // Try to fetch fresh data
+            print("📡 Widget: Calling BalanceService.fetchCurrentMonthBalance()")
             let balanceData = try await BalanceService.shared.fetchCurrentMonthBalance()
+            
+            print("✅ Widget: Successfully received balance data:")
+            print("   📈 Inflow: $\(balanceData.inflow)")
+            print("   📉 Outflow: $\(balanceData.outflow)")
+            print("   📅 Month: \(balanceData.month) \(balanceData.year)")
+            
             let entry = TimWidgetEntry(
                 date: Date(),
                 inflow: balanceData.inflow,
@@ -47,18 +56,31 @@ struct TimTimelineProvider: TimelineProvider {
             )
             
             // Cache the successful result
+            print("💾 Widget: Caching successful result")
             cacheEntry(entry)
             return entry
             
         } catch {
-            print("Widget failed to fetch balance data: \(error)")
+            print("❌ Widget: Failed to fetch balance data")
+            print("   Error: \(error)")
+            print("   Error type: \(type(of: error))")
+            
+            if let balanceError = error as? BalanceError {
+                print("   BalanceError details: \(balanceError.localizedDescription)")
+            }
             
             // Try to use cached data
+            print("🔍 Widget: Checking for cached data...")
             if let cachedEntry = getCachedEntry() {
+                print("✅ Widget: Using cached data:")
+                print("   📈 Cached Inflow: $\(cachedEntry.inflow)")
+                print("   📉 Cached Outflow: $\(cachedEntry.outflow)")
+                print("   🕐 Last Updated: \(cachedEntry.lastUpdated?.description ?? "Unknown")")
                 return cachedEntry
             }
             
             // Fallback to placeholder
+            print("⚠️ Widget: No cached data available, using placeholder")
             return TimWidgetEntry(date: Date(), isPlaceholder: true)
         }
     }

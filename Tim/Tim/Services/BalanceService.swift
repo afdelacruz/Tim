@@ -32,12 +32,18 @@ class BalanceService: BalanceServiceProtocol {
     }
     
     func fetchCurrentMonthBalance() async throws -> MonthlyBalanceData {
+        print("🔐 BalanceService: Checking authentication...")
+        
         // Ensure we have a valid access token
         try await authService.ensureValidAccessToken()
         
         guard let accessToken = authService.accessToken else {
+            print("❌ BalanceService: No access token available")
             throw BalanceError.notAuthenticated
         }
+        
+        print("✅ BalanceService: Access token found (length: \(accessToken.count))")
+        print("🌐 BalanceService: Making API request to /api/balances/current-month")
         
         let endpoint = "/api/balances/current-month"
         let headers = ["Authorization": "Bearer \(accessToken)"]
@@ -54,14 +60,29 @@ class BalanceService: BalanceServiceProtocol {
                 headers: headers
             )
             
+            print("📥 BalanceService: Received API response")
+            print("   Success: \(response.success)")
+            
             if response.success, let data = response.data {
+                print("✅ BalanceService: Valid balance data received")
+                print("   Inflow: $\(data.inflow)")
+                print("   Outflow: $\(data.outflow)")
+                print("   Month: \(data.month) \(data.year)")
                 return data
             } else if let error = response.error {
+                print("❌ BalanceService: API returned error")
+                print("   Error code: \(error.code)")
+                print("   Error message: \(error.message)")
                 throw BalanceError.apiError(error.message)
             } else {
+                print("❌ BalanceService: Invalid response - no data and no error")
                 throw BalanceError.invalidResponse
             }
         } catch {
+            print("❌ BalanceService: Request failed")
+            print("   Error: \(error)")
+            print("   Error type: \(type(of: error))")
+            
             if error is BalanceError {
                 throw error
             } else {
