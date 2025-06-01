@@ -21,4 +21,26 @@ router.post('/link-token', authenticateToken, async (req, res, next) => {
     }
 });
 
+// POST /api/plaid/exchange-token - Exchange public token for access token
+router.post('/exchange-token', authenticateToken, async (req, res, next) => {
+    try {
+        const { publicToken } = req.body;
+        
+        if (!publicToken) {
+            throw new AppError('Public token is required', 400, 'BAD_REQUEST');
+        }
+        
+        const userId = req.user.id;
+        const plaidService = new PlaidService();
+        const result = await plaidService.exchangePublicToken(userId, publicToken);
+        
+        res.json({
+            success: true,
+            data: result
+        });
+    } catch (error) {
+        handleRouteError(error, res, next);
+    }
+});
+
 module.exports = router;

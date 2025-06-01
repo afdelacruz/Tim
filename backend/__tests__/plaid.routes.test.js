@@ -24,7 +24,8 @@ describe('Plaid Routes', () => {
         
         // Mock PlaidService instance
         mockPlaidService = {
-            createLinkToken: jest.fn()
+            createLinkToken: jest.fn(),
+            exchangePublicToken: jest.fn()
         };
         PlaidService.mockImplementation(() => mockPlaidService);
 
@@ -89,6 +90,105 @@ describe('Plaid Routes', () => {
             // Act
             const response = await request(app)
                 .post('/api/plaid/link-token')
+                .expect(401);
+
+            // Assert
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    code: 'UNAUTHORIZED',
+                    message: 'Access token required'
+                }
+            });
+        });
+    });
+
+    describe('POST /api/plaid/exchange-token', () => {
+        it('should exchange public token successfully for authenticated user', async () => {
+            // Arrange
+            const publicToken = 'public-sandbox-test-token';
+            const expectedResult = {
+                accessToken: 'access-sandbox-test-token',
+                itemId: 'item-sandbox-test-id',
+                accounts: [
+                    {
+                        account_id: 'account1',
+                        name: 'Checking Account',
+                        type: 'depository'
+                    }
+                ]
+            };
+            mockPlaidService.exchangePublicToken.mockResolvedValue(expectedResult);
+
+            // Act
+            const response = await request(app)
+                .post('/api/plaid/exchange-token')
+                .send({ publicToken })
+                .expect(200);
+
+            // Assert
+            expect(response.body).toEqual({
+                success: true,
+                data: expectedResult
+            });
+            expect(mockPlaidService.exchangePublicToken).toHaveBeenCalledWith('test-user-id', publicToken);
+        });
+
+        it('should return error when public token is missing', async () => {
+            // Act
+            const response = await request(app)
+                .post('/api/plaid/exchange-token')
+                .send({})
+                .expect(400);
+
+            // Assert
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    code: 'BAD_REQUEST',
+                    message: 'Public token is required'
+                }
+            });
+        });
+
+        it('should return error when PlaidService fails', async () => {
+            // Arrange
+            const { AppError } = require('../utils/errorHandler');
+            const publicToken = 'invalid-token';
+            mockPlaidService.exchangePublicToken.mockRejectedValue(new AppError('Invalid public token', 400, 'INVALID_PUBLIC_TOKEN'));
+
+            // Act
+            const response = await request(app)
+                .post('/api/plaid/exchange-token')
+                .send({ publicToken })
+                .expect(400);
+
+            // Assert
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    code: 'INVALID_PUBLIC_TOKEN',
+                    message: 'Invalid public token'
+                }
+            });
+        });
+
+        it('should require authentication', async () => {
+            // Arrange - Mock auth middleware to reject
+            authenticateToken.mockImplementation((req, res, next) => {
+                res.status(401).json({
+                    success: false,
+                    error: {
+                        code: 'UNAUTHORIZED',
+                        message: 'Access token required'
+                    }
+                });
+            });
+
+            // Act
+            const response = await request(app)
+                .post('/api/plaid/exchange-token')
+                .send({ publicToken: 'test-token' })
                 .expect(401);
 
             // Assert
