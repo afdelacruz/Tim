@@ -28,8 +28,45 @@ struct ContentView: View {
     }
 }
 
-// Placeholder for the main app content
+// Main app content with TabView navigation
 struct MainAppView: View {
+    @ObservedObject var loginViewModel: LoginViewModel
+    
+    var body: some View {
+        TabView {
+            // Dashboard Tab
+            DashboardView(loginViewModel: loginViewModel)
+                .tabItem {
+                    Image(systemName: "house")
+                    Text("Dashboard")
+                }
+            
+            // Bank Accounts Tab
+            PlaidLinkView()
+                .tabItem {
+                    Image(systemName: "building.columns")
+                    Text("Accounts")
+                }
+            
+            // Categories Tab
+            CategoryConfigView()
+                .tabItem {
+                    Image(systemName: "slider.horizontal.3")
+                    Text("Categories")
+                }
+            
+            // Profile Tab
+            ProfileView(loginViewModel: loginViewModel)
+                .tabItem {
+                    Image(systemName: "person")
+                    Text("Profile")
+                }
+        }
+    }
+}
+
+// Dashboard View
+struct DashboardView: View {
     @ObservedObject var loginViewModel: LoginViewModel
     
     var body: some View {
@@ -54,15 +91,83 @@ struct MainAppView: View {
                     .multilineTextAlignment(.center)
                     .padding()
                 
+                // Quick Actions
+                VStack(spacing: 16) {
+                    NavigationLink(destination: PlaidLinkView()) {
+                        HStack {
+                            Image(systemName: "building.columns")
+                            Text("Connect Bank Account")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                        }
+                        .padding()
+                        .background(Color.blue.opacity(0.1))
+                        .cornerRadius(12)
+                    }
+                    .foregroundColor(.blue)
+                    
+                    NavigationLink(destination: CategoryConfigView()) {
+                        HStack {
+                            Image(systemName: "slider.horizontal.3")
+                            Text("Configure Categories")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                        }
+                        .padding()
+                        .background(Color.green.opacity(0.1))
+                        .cornerRadius(12)
+                    }
+                    .foregroundColor(.green)
+                }
+                .padding(.horizontal)
+                
+                Spacer()
+            }
+            .navigationTitle("Dashboard")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+}
+
+// Profile View
+struct ProfileView: View {
+    @ObservedObject var loginViewModel: LoginViewModel
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                
+                if let user = loginViewModel.currentUser {
+                    VStack(spacing: 8) {
+                        Image(systemName: "person.circle.fill")
+                            .font(.system(size: 80))
+                            .foregroundColor(.blue)
+                        
+                        Text(user.email)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                        
+                        Text("Member since \(user.createdAt, style: .date)")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.top, 40)
+                }
+                
                 Spacer()
                 
                 Button("Sign Out") {
                     loginViewModel.logout()
                 }
-                .foregroundColor(.red)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
                 .padding()
+                .background(Color.red)
+                .cornerRadius(12)
+                .padding(.horizontal)
+                .padding(.bottom, 40)
             }
-            .navigationTitle("Tim")
+            .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
         }
     }

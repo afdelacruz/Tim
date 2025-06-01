@@ -88,6 +88,24 @@ router.put('/:id', authenticateToken, async (req, res) => {
 });
 
 /**
+ * PUT /api/accounts/:id/categories
+ * Update account category settings (inflow/outflow)
+ */
+router.put('/:id/categories', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const accountId = req.params.id;
+        const categoryUpdates = req.body;
+
+        const result = await accountService.updateAccountCategories(accountId, userId, categoryUpdates);
+
+        res.json(result);
+    } catch (error) {
+        handleRouteError(res, error, 'Failed to update account categories');
+    }
+});
+
+/**
  * DELETE /api/accounts/:id
  * Deactivate an account (soft delete)
  */
