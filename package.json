@@ -1,0 +1,13 @@
+{
+  "name": "tim-root",
+  "version": "1.0.0",
+  "description": "Tim - Weekend MVP iOS widget app",
+  "scripts": {
+    "install": "cd backend && npm install",
+    "start": "cd backend && npm start",
+    "test": "cd backend && npm test"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 
