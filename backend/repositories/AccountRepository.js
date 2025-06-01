@@ -53,6 +53,43 @@ class AccountRepository {
         }
     }
 
+    async updateAccount(accountId, updates) {
+        const allowedFields = ['nickname', 'is_active', 'updated_at'];
+        const updateFields = [];
+        const values = [];
+        let paramIndex = 1;
+
+        for (const [key, value] of Object.entries(updates)) {
+            if (allowedFields.includes(key)) {
+                updateFields.push(`${key} = $${paramIndex}`);
+                values.push(value);
+                paramIndex++;
+            }
+        }
+
+        if (updateFields.length === 0) {
+            throw new Error('No valid fields to update');
+        }
+
+        // Add updated_at if not already included
+        if (!updates.updated_at) {
+            updateFields.push(`updated_at = $${paramIndex}`);
+            values.push(new Date());
+            paramIndex++;
+        }
+
+        values.push(accountId); // Add accountId as the last parameter
+        const query = `UPDATE accounts SET ${updateFields.join(', ')} WHERE id = $${paramIndex} RETURNING *`;
+
+        try {
+            const { rows } = await db.query(query, values);
+            return rows[0] || null;
+        } catch (err) {
+            console.error('Error updating account:', err);
+            throw new Error('Could not update account');
+        }
+    }
+
     async updateAccountCategories(accountId, isInflow, isOutflow) {
         const query = 'UPDATE accounts SET is_inflow = $1, is_outflow = $2 WHERE id = $3 RETURNING *';
         const values = [isInflow, isOutflow, accountId];

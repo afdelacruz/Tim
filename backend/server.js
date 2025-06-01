@@ -7,6 +7,7 @@ const plaidRoutes = require('./routes/plaid');
 const balanceRoutes = require('./routes/balances');
 const balanceHistoryRoutes = require('./routes/balanceHistory');
 const monthlyComparisonRoutes = require('./routes/monthlyComparison');
+const accountRoutes = require('./routes/accounts');
 const { globalErrorHandler } = require('./utils/errorHandler');
 
 const app = express();
@@ -53,6 +54,7 @@ app.use('/api/plaid', plaidRoutes);
 app.use('/api/balances', balanceRoutes);
 app.use('/api/balance-history', balanceHistoryRoutes);
 app.use('/api/monthly-comparison', monthlyComparisonRoutes);
+app.use('/api/accounts', accountRoutes);
 
 // 404 handler for unmatched routes
 app.use((req, res, next) => {
