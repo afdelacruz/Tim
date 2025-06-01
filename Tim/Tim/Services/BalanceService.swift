@@ -42,10 +42,15 @@ class BalanceService: BalanceServiceProtocol {
         let endpoint = "/api/balances/current-month"
         let headers = ["Authorization": "Bearer \(accessToken)"]
         
+        guard let url = NetworkManager.shared.buildURL(path: endpoint) else {
+            throw BalanceError.networkError("Invalid URL")
+        }
+        
         do {
             let response: BalanceResponse = try await networkManager.request(
-                endpoint: endpoint,
+                url: url,
                 method: .GET,
+                body: nil,
                 headers: headers
             )
             
