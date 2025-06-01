@@ -121,19 +121,13 @@ struct PlaidAccount: Codable, Identifiable {
 
 struct SavedPlaidAccount: Codable, Identifiable {
     let id: String
-    let accountId: String
     let name: String
-    let nickname: String?
     let type: String
-    let subtype: String?
     let institutionName: String
-    let mask: String?
-    let isActive: Bool
     let currentBalance: Double
     let lastUpdated: String?
     let needsReauth: Bool
     let createdAt: String
-    let updatedAt: String
     
     // Convert to PlaidAccount for UI consistency
     func toPlaidAccount() -> PlaidAccount {
@@ -151,7 +145,7 @@ struct SavedPlaidAccount: Codable, Identifiable {
         return PlaidAccount(
             id: id,
             name: name,
-            accountType: subtype?.capitalized ?? type.capitalized,
+            accountType: type.capitalized,
             institutionName: institutionName,
             isInflow: false, // These will be set by user later
             isOutflow: false,
