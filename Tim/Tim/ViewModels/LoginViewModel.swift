@@ -45,6 +45,11 @@ class LoginViewModel: ObservableObject {
                 // Store tokens securely
                 if let accessToken = response.accessToken {
                     keychainService.storeAccessToken(accessToken)
+                    
+                    // ALSO store in shared UserDefaults for widget access
+                    if let sharedDefaults = UserDefaults(suiteName: "group.com.tim.widget") {
+                        sharedDefaults.set(accessToken, forKey: "access_token")
+                    }
                 }
                 if let refreshToken = response.refreshToken {
                     keychainService.storeRefreshToken(refreshToken)
@@ -115,6 +120,12 @@ class LoginViewModel: ObservableObject {
         isAuthenticated = false
         currentUser = nil
         keychainService.clearTokens()
+        
+        // ALSO clear from shared UserDefaults
+        if let sharedDefaults = UserDefaults(suiteName: "group.com.tim.widget") {
+            sharedDefaults.removeObject(forKey: "access_token")
+        }
+        
         clearForm()
         errorMessage = nil
     }
