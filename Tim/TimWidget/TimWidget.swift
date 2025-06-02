@@ -29,8 +29,9 @@ struct TimWidgetView: View {
                     .foregroundColor(.green)
                     .font(.system(size: 14, weight: .semibold))
                 Spacer()
+                // Visual indicator: Green circle for real data, red for fallback
                 Circle()
-                    .fill(Color.green)
+                    .fill(isRealData ? Color.green : Color.orange)
                     .frame(width: 6, height: 6)
             }
             
@@ -39,9 +40,15 @@ struct TimWidgetView: View {
                     .foregroundColor(.red)
                     .font(.system(size: 14, weight: .semibold))
                 Spacer()
-                Circle()
-                    .fill(Color.red)
-                    .frame(width: 6, height: 6)
+                if entry.lastUpdated != nil {
+                    Text("Updated")
+                        .font(.system(size: 8))
+                        .foregroundColor(.secondary)
+                } else {
+                    Text("Cached")
+                        .font(.system(size: 8))
+                        .foregroundColor(.secondary)
+                }
             }
             
             if let lastUpdated = entry.lastUpdated, !entry.isPlaceholder {
@@ -55,6 +62,12 @@ struct TimWidgetView: View {
         }
         .padding(8)
         .background(Color(.systemBackground))
+    }
+    
+    // Helper to determine if this is real API data vs fallback
+    private var isRealData: Bool {
+        // Fallback data is exactly 3240.0 and 1876.0
+        return !(entry.inflow == 3240.0 && entry.outflow == 1876.0) && !entry.isPlaceholder
     }
     
     private func timeAgoString(from date: Date) -> String {
@@ -85,7 +98,7 @@ struct TimWidget: Widget {
         }
         .configurationDisplayName("Tim Balance")
         .description("View your monthly inflows and outflows at a glance.")
-        .supportedFamilies([.systemSmall])
+        .supportedFamilies([.systemSmall, .systemMedium])  // Both small and medium sizes
     }
 }
 

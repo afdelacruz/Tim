@@ -9,6 +9,7 @@ enum AuthError: Error, Equatable {
     case decodingError
     case tokenExpired
     case unknown
+  
     
     var localizedDescription: String {
         switch self {
