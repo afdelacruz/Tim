@@ -13,6 +13,9 @@ class MockKeychainService: KeychainServiceProtocol {
     var getAccessTokenCallCount = 0
     var getRefreshTokenCallCount = 0
     var clearTokensCallCount = 0
+    var saveAccessTokenCallCount = 0
+    var deleteAccessTokenCallCount = 0
+    var deleteRefreshTokenCallCount = 0
     
     func storeAccessToken(_ token: String) {
         storeAccessTokenCallCount += 1
@@ -40,6 +43,21 @@ class MockKeychainService: KeychainServiceProtocol {
         storedRefreshToken = nil
     }
     
+    func saveAccessToken(_ token: String) {
+        saveAccessTokenCallCount += 1
+        storeAccessToken(token)
+    }
+    
+    func deleteAccessToken() {
+        deleteAccessTokenCallCount += 1
+        storedAccessToken = nil
+    }
+    
+    func deleteRefreshToken() {
+        deleteRefreshTokenCallCount += 1
+        storedRefreshToken = nil
+    }
+    
     func reset() {
         storedAccessToken = nil
         storedRefreshToken = nil
@@ -48,5 +66,8 @@ class MockKeychainService: KeychainServiceProtocol {
         getAccessTokenCallCount = 0
         getRefreshTokenCallCount = 0
         clearTokensCallCount = 0
+        saveAccessTokenCallCount = 0
+        deleteAccessTokenCallCount = 0
+        deleteRefreshTokenCallCount = 0
     }
 } 

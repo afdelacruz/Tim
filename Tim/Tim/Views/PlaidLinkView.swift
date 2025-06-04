@@ -5,7 +5,12 @@ struct PlaidLinkView: View {
     
     @StateObject private var viewModel: PlaidLinkViewModel
     
-    init(viewModel: PlaidLinkViewModel = PlaidLinkViewModel()) {
+    @MainActor init(plaidService: PlaidServiceProtocol = PlaidService()) {
+        self._viewModel = StateObject(wrappedValue: PlaidLinkViewModel(plaidService: plaidService))
+    }
+    
+    // For testing with pre-configured ViewModel
+    @MainActor init(viewModel: PlaidLinkViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
     }
     

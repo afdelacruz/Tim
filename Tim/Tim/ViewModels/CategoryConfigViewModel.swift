@@ -26,7 +26,7 @@ class CategoryConfigViewModel: ObservableObject {
     
     // MARK: - Initialization
     
-    nonisolated init(plaidService: PlaidServiceProtocol = PlaidService()) {
+    init(plaidService: PlaidServiceProtocol = PlaidService()) {
         self.plaidService = plaidService
     }
     

@@ -3,6 +3,11 @@ import Foundation
 
 class MockAuthService: AuthServiceProtocol {
     
+    // Mock properties
+    var mockAccessToken: String?
+    var shouldSucceed = true
+    var ensureValidTokenCalled = false
+    
     // Mock results to return
     var registerResult: Result<AuthResponse, Error> = .success(AuthResponse(success: true))
     var loginResult: Result<AuthResponse, Error> = .success(AuthResponse(success: true))
@@ -19,12 +24,21 @@ class MockAuthService: AuthServiceProtocol {
     var loginCallCount = 0
     var refreshTokenCallCount = 0
     var getCurrentUserCallCount = 0
+    var logoutCallCount = 0
+    var refreshAccessTokenCallCount = 0
+    var ensureValidAccessTokenCallCount = 0
     
     var lastRegisterEmail: String?
     var lastRegisterPin: String?
     var lastLoginEmail: String?
     var lastLoginPin: String?
     var lastRefreshToken: String?
+    
+    // MARK: - AuthServiceProtocol Implementation
+    
+    var accessToken: String? {
+        return mockAccessToken
+    }
     
     func register(email: String, pin: String) async throws -> AuthResponse {
         registerCallCount += 1
@@ -60,6 +74,37 @@ class MockAuthService: AuthServiceProtocol {
         }
     }
     
+    func logout() async {
+        logoutCallCount += 1
+        mockAccessToken = nil
+    }
+    
+    func refreshAccessToken() async throws -> String {
+        refreshAccessTokenCallCount += 1
+        
+        if !shouldSucceed {
+            throw AuthError.tokenExpired
+        }
+        
+        let newToken = "refreshed_access_token"
+        mockAccessToken = newToken
+        return newToken
+    }
+    
+    func ensureValidAccessToken() async throws {
+        ensureValidAccessTokenCallCount += 1
+        ensureValidTokenCalled = true
+        
+        if !shouldSucceed {
+            throw AuthError.tokenExpired
+        }
+        
+        // If no access token, try to refresh
+        if mockAccessToken == nil {
+            _ = try await refreshAccessToken()
+        }
+    }
+    
     func refreshToken(refreshToken: String) async throws -> AuthResponse {
         refreshTokenCallCount += 1
         lastRefreshToken = refreshToken
@@ -92,12 +137,19 @@ class MockAuthService: AuthServiceProtocol {
         loginCallCount = 0
         refreshTokenCallCount = 0
         getCurrentUserCallCount = 0
+        logoutCallCount = 0
+        refreshAccessTokenCallCount = 0
+        ensureValidAccessTokenCallCount = 0
+        ensureValidTokenCalled = false
         
         lastRegisterEmail = nil
         lastRegisterPin = nil
         lastLoginEmail = nil
         lastLoginPin = nil
         lastRefreshToken = nil
+        
+        mockAccessToken = nil
+        shouldSucceed = true
         
         registerResult = .success(AuthResponse(success: true))
         loginResult = .success(AuthResponse(success: true))

@@ -93,7 +93,7 @@ class BalanceService: BalanceServiceProtocol {
 }
 
 // MARK: - Balance Errors
-enum BalanceError: LocalizedError {
+enum BalanceError: LocalizedError, Equatable {
     case notAuthenticated
     case networkError(String)
     case apiError(String)

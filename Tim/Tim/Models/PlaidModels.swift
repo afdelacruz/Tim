@@ -128,6 +128,8 @@ struct SavedPlaidAccount: Codable, Identifiable {
     let lastUpdated: String?
     let needsReauth: Bool
     let createdAt: String
+    let isInflow: Bool
+    let isOutflow: Bool
     
     // Convert to PlaidAccount for UI consistency
     func toPlaidAccount() -> PlaidAccount {
@@ -147,8 +149,8 @@ struct SavedPlaidAccount: Codable, Identifiable {
             name: name,
             accountType: type.capitalized,
             institutionName: institutionName,
-            isInflow: false, // These will be set by user later
-            isOutflow: false,
+            isInflow: isInflow, // Use the persisted category settings
+            isOutflow: isOutflow,
             needsReauthentication: needsReauth,
             createdAt: createdDate
         )

@@ -1,3 +1,10 @@
+//
+//  TimWidget.swift
+//  TimWidget
+//
+//  Created by Andrew De la Cruz on 6/2/25.
+//
+
 import WidgetKit
 import SwiftUI
 
@@ -23,7 +30,8 @@ struct TimWidgetView: View {
     let entry: TimWidgetEntry
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        print("🎨 TimWidgetView: Rendering with inflow: \(entry.inflow), outflow: \(entry.outflow), placeholder: \(entry.isPlaceholder)")
+        return VStack(alignment: .leading, spacing: 2) {
             HStack {
                 Text(entry.isPlaceholder ? "+--" : "+$\(Int(entry.inflow))")
                     .foregroundColor(.green)
@@ -108,4 +116,4 @@ struct TimWidget: Widget {
 } timeline: {
     TimWidgetEntry(date: .now, inflow: 1240, outflow: 890, lastUpdated: Date().addingTimeInterval(-3600))
     TimWidgetEntry(date: .now, inflow: 0, outflow: 0, isPlaceholder: true)
-} 
+}
