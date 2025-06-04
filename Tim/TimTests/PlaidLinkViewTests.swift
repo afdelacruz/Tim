@@ -26,7 +26,7 @@ final class PlaidLinkViewTests: XCTestCase {
         
         // Act & Assert
         let hostingController = UIHostingController(rootView: view)
-        let _ = hostingController.view
+        _ = hostingController.view
         
         // The view should contain a "Connect Bank Account" button
         // This is verified through the view's structure
@@ -40,7 +40,7 @@ final class PlaidLinkViewTests: XCTestCase {
         
         // Act & Assert
         let hostingController = UIHostingController(rootView: view)
-        let _ = hostingController.view
+        _ = hostingController.view
         
         // When loading, the view should show loading indicator
         XCTAssertTrue(viewModel.isLoading)
@@ -53,7 +53,7 @@ final class PlaidLinkViewTests: XCTestCase {
         
         // Act & Assert
         let hostingController = UIHostingController(rootView: view)
-        let _ = hostingController.view
+        _ = hostingController.view
         
         // When error is present, the view should display it
         XCTAssertEqual(viewModel.errorMessage, "Test error message")
@@ -76,7 +76,7 @@ final class PlaidLinkViewTests: XCTestCase {
         
         // Act & Assert
         let hostingController = UIHostingController(rootView: view)
-        let _ = hostingController.view
+        _ = hostingController.view
         
         // When accounts are present, the view should display them
         XCTAssertEqual(viewModel.connectedAccounts.count, 1)
@@ -87,7 +87,7 @@ final class PlaidLinkViewTests: XCTestCase {
     
     func testPlaidLinkView_bindsToViewModelState() {
         // Arrange
-        let view = PlaidLinkView(viewModel: viewModel)
+        _ = PlaidLinkView(viewModel: viewModel)
         
         // Act
         viewModel.isLoading = true
@@ -161,7 +161,7 @@ final class PlaidLinkViewTests: XCTestCase {
     
     func testPlaidLinkView_showingPlaidLinkTriggersSheet() {
         // Arrange
-        let view = PlaidLinkView(viewModel: viewModel)
+        _ = PlaidLinkView(viewModel: viewModel)
         
         // Act
         viewModel.showingPlaidLink = true

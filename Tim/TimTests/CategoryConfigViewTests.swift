@@ -63,6 +63,9 @@ final class CategoryConfigViewTests: XCTestCase {
         
         // Then
         XCTAssertNotNil(rowView)
+        // Verify callbacks are set up (they would be called on user interaction)
+        XCTAssertFalse(inflowToggleCalled, "Callback should not be called during initialization")
+        XCTAssertFalse(outflowToggleCalled, "Callback should not be called during initialization")
         // Note: UI state testing would require ViewInspector or similar for deeper testing
         // For MVP, we focus on ViewModel logic testing
     }
@@ -92,6 +95,8 @@ final class CategoryConfigViewTests: XCTestCase {
         
         // Then
         XCTAssertNotNil(rowView)
+        XCTAssertFalse(inflowToggleCalled, "Callback should not be called during initialization")
+        XCTAssertFalse(outflowToggleCalled, "Callback should not be called during initialization")
     }
     
     func testCategoryAccountRowView_withBothCategories_showsCorrectState() {
@@ -119,6 +124,8 @@ final class CategoryConfigViewTests: XCTestCase {
         
         // Then
         XCTAssertNotNil(rowView)
+        XCTAssertFalse(inflowToggleCalled, "Callback should not be called during initialization")
+        XCTAssertFalse(outflowToggleCalled, "Callback should not be called during initialization")
     }
     
     func testCategoryAccountRowView_withNeitherCategory_showsCorrectState() {
@@ -146,6 +153,8 @@ final class CategoryConfigViewTests: XCTestCase {
         
         // Then
         XCTAssertNotNil(rowView)
+        XCTAssertFalse(inflowToggleCalled, "Callback should not be called during initialization")
+        XCTAssertFalse(outflowToggleCalled, "Callback should not be called during initialization")
     }
     
     // MARK: - Integration Tests with ViewModel
@@ -215,7 +224,7 @@ final class CategoryConfigViewTests: XCTestCase {
             ("Unknown", "building.columns")
         ]
         
-        for (accountType, expectedIcon) in testCases {
+        for (accountType, _) in testCases {
             let account = PlaidAccount(
                 id: "test",
                 name: "Test Account",

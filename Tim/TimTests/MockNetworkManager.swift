@@ -8,6 +8,10 @@ class MockNetworkManager: NetworkManagerProtocol {
     var shouldThrowError = false
     var errorToThrow: Error?
     
+    // Properties for BalanceService compatibility
+    var shouldSucceed = true
+    var mockError: Error?
+    
     // Tracking properties for verification
     var lastRequestURL: URL?
     var lastRequestMethod: String?
@@ -27,9 +31,17 @@ class MockNetworkManager: NetworkManagerProtocol {
         lastRequestBody = body
         lastRequestHeaders = headers
         
-        // Simulate error if configured
+        // Handle error scenarios
+        if let error = mockError {
+            throw error
+        }
+        
         if shouldThrowError {
             throw errorToThrow ?? NetworkError.unknown
+        }
+        
+        if !shouldSucceed {
+            throw NetworkError.unknown
         }
         
         // Return mock response
@@ -44,6 +56,8 @@ class MockNetworkManager: NetworkManagerProtocol {
         mockResponse = nil
         shouldThrowError = false
         errorToThrow = nil
+        shouldSucceed = true
+        mockError = nil
         lastRequestURL = nil
         lastRequestMethod = nil
         lastRequestBody = nil

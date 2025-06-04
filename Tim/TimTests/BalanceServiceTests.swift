@@ -1,49 +1,6 @@
 import XCTest
 @testable import Tim
 
-// MARK: - Mock Network Manager
-class MockNetworkManager: NetworkManagerProtocol {
-    var shouldSucceed = true
-    var mockResponse: Any?
-    var mockError: Error?
-    
-    func request<T: Codable>(endpoint: String, method: HTTPMethod, body: Data?, headers: [String: String]?) async throws -> T {
-        if let error = mockError {
-            throw error
-        }
-        
-        if shouldSucceed, let response = mockResponse as? T {
-            return response
-        }
-        
-        throw NetworkError.invalidResponse
-    }
-}
-
-// MARK: - Mock Auth Service
-class MockAuthService: AuthServiceProtocol {
-    var shouldSucceed = true
-    var mockAccessToken: String?
-    var ensureValidTokenCalled = false
-    
-    var accessToken: String? {
-        return mockAccessToken
-    }
-    
-    func ensureValidAccessToken() async throws {
-        ensureValidTokenCalled = true
-        if !shouldSucceed {
-            throw AuthError.tokenExpired
-        }
-    }
-    
-    // Other required protocol methods (not used in BalanceService)
-    func register(email: String, pin: String) async throws -> AuthResponse { fatalError() }
-    func login(email: String, pin: String) async throws -> AuthResponse { fatalError() }
-    func logout() async { }
-    func refreshAccessToken() async throws -> String { fatalError() }
-}
-
 // MARK: - Balance Service Tests
 @MainActor
 class BalanceServiceTests: XCTestCase {
@@ -163,7 +120,7 @@ class BalanceServiceTests: XCTestCase {
         // Given
         mockAuthService.shouldSucceed = true
         mockAuthService.mockAccessToken = "valid_token"
-        mockNetworkManager.mockError = NetworkError.noConnection
+        mockNetworkManager.mockError = NetworkError.networkUnavailable
         
         // When/Then
         do {

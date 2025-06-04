@@ -157,7 +157,9 @@ final class PlaidServiceTests: XCTestCase {
                 currentBalance: 1000.0,
                 lastUpdated: nil,
                 needsReauth: false,
-                createdAt: "2024-01-01T00:00:00.000Z"
+                createdAt: "2024-01-01T00:00:00.000Z",
+                isInflow: false,
+                isOutflow: false
             ),
             SavedPlaidAccount(
                 id: "account-2",
@@ -167,7 +169,9 @@ final class PlaidServiceTests: XCTestCase {
                 currentBalance: -500.0,
                 lastUpdated: nil,
                 needsReauth: false,
-                createdAt: "2024-01-01T00:00:00.000Z"
+                createdAt: "2024-01-01T00:00:00.000Z",
+                isInflow: false,
+                isOutflow: false
             )
         ]
         let accountsData = AccountsData(accounts: savedAccounts, count: 2)
@@ -249,6 +253,60 @@ final class PlaidServiceTests: XCTestCase {
         XCTAssertEqual(response.message, "Account categories updated successfully")
         XCTAssertEqual(mockNetworkManager.lastRequestURL?.path, "/api/accounts/\(accountId)/categories")
         XCTAssertEqual(mockNetworkManager.lastRequestMethod, "PUT")
+    }
+    
+    // MARK: - Category Persistence Tests
+    
+    func testFetchAccounts_whenBackendReturnsCategoryData_preservesCategorySettings() async throws {
+        // Arrange - Backend returns accounts with category data
+        let savedAccounts = [
+            SavedPlaidAccount(
+                id: "account-1",
+                name: "Salary Account",
+                type: "depository",
+                institutionName: "Chase", 
+                currentBalance: 5000.0,
+                lastUpdated: nil,
+                needsReauth: false,
+                createdAt: "2024-01-01T00:00:00.000Z",
+                isInflow: true,   // Backend says this is an inflow account
+                isOutflow: false
+            ),
+            SavedPlaidAccount(
+                id: "account-2", 
+                name: "Credit Card",
+                type: "credit",
+                institutionName: "Chase",
+                currentBalance: -1500.0,
+                lastUpdated: nil,
+                needsReauth: false,
+                createdAt: "2024-01-01T00:00:00.000Z",
+                isInflow: false,
+                isOutflow: true   // Backend says this is an outflow account
+            )
+        ]
+        let accountsData = AccountsData(accounts: savedAccounts, count: 2)
+        let expectedResponse = AccountsResponse(
+            success: true,
+            data: accountsData
+        )
+        mockNetworkManager.mockResponse = expectedResponse
+        
+        // Act
+        let accounts = try await plaidService.fetchAccounts()
+        
+        // Assert - Category settings should be preserved from backend
+        XCTAssertEqual(accounts.count, 2)
+        
+        // First account should maintain inflow=true, outflow=false
+        let salaryAccount = accounts.first { $0.name == "Salary Account" }!
+        XCTAssertTrue(salaryAccount.isInflow, "Salary account should remain an inflow account")
+        XCTAssertFalse(salaryAccount.isOutflow, "Salary account should not be an outflow account")
+        
+        // Second account should maintain inflow=false, outflow=true  
+        let creditAccount = accounts.first { $0.name == "Credit Card" }!
+        XCTAssertFalse(creditAccount.isInflow, "Credit card should not be an inflow account")
+        XCTAssertTrue(creditAccount.isOutflow, "Credit card should remain an outflow account")
     }
     
     func testUpdateAccountCategories_forNonExistentAccount_throwsCategoryUpdateFailedError() async {

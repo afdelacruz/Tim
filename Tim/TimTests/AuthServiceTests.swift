@@ -120,42 +120,55 @@ final class AuthServiceTests: XCTestCase {
     
     // MARK: - Token Refresh Tests
     
-    func testRefreshToken_withValidRefreshToken_returnsNewAccessToken() async throws {
+    func testRefreshAccessToken_withValidRefreshToken_returnsNewAccessToken() async throws {
         // Arrange
-        let refreshToken = "valid_refresh_token"
+        let expectedToken = "new_access_token"
+        
+        // Mock the keychain to have a refresh token
+        let mockKeychainService = MockKeychainService()
+        mockKeychainService.storedRefreshToken = "valid_refresh_token"
+        
+        let authServiceWithMockKeychain = AuthService(
+            networkManager: mockNetworkManager,
+            keychainService: mockKeychainService
+        )
+        
         let expectedResponse = AuthResponse(
             success: true,
             message: nil,
-            accessToken: "new_access_token",
+            accessToken: expectedToken,
             refreshToken: nil,
             user: nil
         )
         mockNetworkManager.mockResponse = expectedResponse
         
         // Act
-        let response = try await authService.refreshToken(refreshToken: refreshToken)
+        let newToken = try await authServiceWithMockKeychain.refreshAccessToken()
         
         // Assert
-        XCTAssertTrue(response.success)
-        XCTAssertEqual(response.accessToken, "new_access_token")
+        XCTAssertEqual(newToken, expectedToken)
         XCTAssertEqual(mockNetworkManager.lastRequestURL?.path, "/api/auth/refresh-token")
         XCTAssertEqual(mockNetworkManager.lastRequestMethod, "POST")
     }
     
-    func testRefreshToken_withInvalidRefreshToken_throwsUnauthorizedError() async {
+    func testRefreshAccessToken_withInvalidRefreshToken_throwsUnauthorizedError() async {
         // Arrange
-        let invalidRefreshToken = "invalid_refresh_token"
-        mockNetworkManager.shouldThrowError = true
-        mockNetworkManager.errorToThrow = AuthError.unauthorized
+        let mockKeychainService = MockKeychainService()
+        mockKeychainService.storedRefreshToken = nil // No refresh token
+        
+        let authServiceWithMockKeychain = AuthService(
+            networkManager: mockNetworkManager,
+            keychainService: mockKeychainService
+        )
         
         // Act & Assert
         do {
-            _ = try await authService.refreshToken(refreshToken: invalidRefreshToken)
-            XCTFail("Expected unauthorized error to be thrown")
+            _ = try await authServiceWithMockKeychain.refreshAccessToken()
+            XCTFail("Expected token expired error to be thrown")
         } catch let error as AuthError {
-            XCTAssertEqual(error, AuthError.unauthorized)
+            XCTAssertEqual(error, AuthError.tokenExpired)
         } catch {
-            XCTFail("Expected AuthError.unauthorized, got \(error)")
+            XCTFail("Expected AuthError.tokenExpired, got \(error)")
         }
     }
 } 
