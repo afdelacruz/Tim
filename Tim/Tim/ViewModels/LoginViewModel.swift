@@ -49,6 +49,31 @@ class LoginViewModel: ObservableObject {
                     // ALSO store in shared UserDefaults for widget access
                     if let sharedDefaults = UserDefaults(suiteName: "group.com.tim.widget") {
                         sharedDefaults.set(accessToken, forKey: "access_token")
+                        print("🔑 LoginViewModel: Stored access token in shared UserDefaults during login (length: \(accessToken.count))")
+                        
+                        // Verify it was stored
+                        if let storedToken = sharedDefaults.string(forKey: "access_token") {
+                            print("✅ LoginViewModel: Verified token storage - retrieved length: \(storedToken.count)")
+                        } else {
+                            print("❌ LoginViewModel: Failed to retrieve token after storing!")
+                        }
+                        
+                        // Force synchronization
+                        sharedDefaults.synchronize()
+                        print("🔄 LoginViewModel: Forced UserDefaults synchronization")
+                        
+                        // Debug: List all keys to see what's actually in there
+                        let allKeys = sharedDefaults.dictionaryRepresentation().keys
+                        print("🔍 LoginViewModel: All keys in shared UserDefaults after storage: \(Array(allKeys))")
+                        
+                        // Double-check the access_token key specifically
+                        if allKeys.contains("access_token") {
+                            print("✅ LoginViewModel: access_token key confirmed in shared UserDefaults")
+                        } else {
+                            print("❌ LoginViewModel: access_token key NOT found in shared UserDefaults after storage!")
+                        }
+                    } else {
+                        print("❌ LoginViewModel: Failed to get shared UserDefaults during login")
                     }
                 }
                 if let refreshToken = response.refreshToken {
@@ -110,9 +135,22 @@ class LoginViewModel: ObservableObject {
             let user = try await authService.getCurrentUser()
             currentUser = user
             isAuthenticated = true
+            
+            // ALSO store in shared UserDefaults for widget access
+            if let sharedDefaults = UserDefaults(suiteName: "group.com.tim.widget") {
+                sharedDefaults.set(accessToken, forKey: "access_token")
+                print("🔑 LoginViewModel: Stored access token in shared UserDefaults (length: \(accessToken.count))")
+            } else {
+                print("❌ LoginViewModel: Failed to get shared UserDefaults")
+            }
         } catch {
             // Token might be expired or invalid, clear it
             keychainService.clearTokens()
+            
+            // ALSO clear from shared UserDefaults
+            if let sharedDefaults = UserDefaults(suiteName: "group.com.tim.widget") {
+                sharedDefaults.removeObject(forKey: "access_token")
+            }
         }
     }
     
