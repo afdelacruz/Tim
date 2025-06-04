@@ -4,7 +4,12 @@ struct CategoryConfigView: View {
     
     @StateObject private var viewModel: CategoryConfigViewModel
     
-    init(viewModel: CategoryConfigViewModel = CategoryConfigViewModel()) {
+    @MainActor init(plaidService: PlaidServiceProtocol = PlaidService()) {
+        self._viewModel = StateObject(wrappedValue: CategoryConfigViewModel(plaidService: plaidService))
+    }
+    
+    // For testing with pre-configured ViewModel
+    @MainActor init(viewModel: CategoryConfigViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
     }
     
