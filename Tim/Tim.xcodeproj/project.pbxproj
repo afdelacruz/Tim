@@ -7,10 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		512AFBCC2DEE54F60088928D /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 512AFB1D2DEE52E60088928D /* WidgetKit.framework */; };
+		512AFBCD2DEE54F60088928D /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 512AFB1F2DEE52E60088928D /* SwiftUI.framework */; };
+		512AFBDC2DEE54F80088928D /* TimWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 512AFBCB2DEE54F60088928D /* TimWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		516422E82DEC13850094A2CB /* LinkKit in Frameworks */ = {isa = PBXBuildFile; productRef = 516422E72DEC13850094A2CB /* LinkKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		512AFBDA2DEE54F80088928D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 51F909E72DEBE8670010E494 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 512AFBCA2DEE54F60088928D;
+			remoteInfo = TimWidgetExtension;
+		};
 		51F90A002DEBE8690010E494 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 51F909E72DEBE8670010E494 /* Project object */;
@@ -27,13 +37,40 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		512AFB342DEE52E70088928D /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				512AFBDC2DEE54F80088928D /* TimWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		512AFB1D2DEE52E60088928D /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		512AFB1F2DEE52E60088928D /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		512AFBCB2DEE54F60088928D /* TimWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TimWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		51F909EF2DEBE8670010E494 /* Tim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51F909FF2DEBE8690010E494 /* TimTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TimTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		51F90A092DEBE8690010E494 /* TimUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TimUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		512AFB3E2DEE530B0088928D /* TimWidgetExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TimWidgetExtension;
+			sourceTree = "<group>";
+		};
+		512AFBCE2DEE54F60088928D /* TimWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TimWidget;
+			sourceTree = "<group>";
+		};
 		51F909F12DEBE8670010E494 /* Tim */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Tim;
@@ -52,6 +89,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		512AFBC82DEE54F60088928D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				512AFBCD2DEE54F60088928D /* SwiftUI.framework in Frameworks */,
+				512AFBCC2DEE54F60088928D /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		51F909EC2DEBE8670010E494 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -77,9 +123,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		512A00A12DEE5A9C0088928D /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				512AFBCE2DEE54F60088928D /* TimWidget */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		516422E62DEC13850094A2CB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				512AFB1D2DEE52E60088928D /* WidgetKit.framework */,
+				512AFB1F2DEE52E60088928D /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -90,8 +146,10 @@
 				51F909F12DEBE8670010E494 /* Tim */,
 				51F90A022DEBE8690010E494 /* TimTests */,
 				51F90A0C2DEBE8690010E494 /* TimUITests */,
+				512AFB3E2DEE530B0088928D /* TimWidgetExtension */,
 				516422E62DEC13850094A2CB /* Frameworks */,
 				51F909F02DEBE8670010E494 /* Products */,
+				512A00A12DEE5A9C0088928D /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,6 +159,7 @@
 				51F909EF2DEBE8670010E494 /* Tim.app */,
 				51F909FF2DEBE8690010E494 /* TimTests.xctest */,
 				51F90A092DEBE8690010E494 /* TimUITests.xctest */,
+				512AFBCB2DEE54F60088928D /* TimWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,6 +167,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		512AFBCA2DEE54F60088928D /* TimWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 512AFBDE2DEE54F80088928D /* Build configuration list for PBXNativeTarget "TimWidgetExtension" */;
+			buildPhases = (
+				512AFBC72DEE54F60088928D /* Sources */,
+				512AFBC82DEE54F60088928D /* Frameworks */,
+				512AFBC92DEE54F60088928D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				512AFBCE2DEE54F60088928D /* TimWidget */,
+			);
+			name = TimWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = TimWidgetExtension;
+			productReference = 512AFBCB2DEE54F60088928D /* TimWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		51F909EE2DEBE8670010E494 /* Tim */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 51F90A132DEBE8690010E494 /* Build configuration list for PBXNativeTarget "Tim" */;
@@ -115,10 +196,12 @@
 				51F909EB2DEBE8670010E494 /* Sources */,
 				51F909EC2DEBE8670010E494 /* Frameworks */,
 				51F909ED2DEBE8670010E494 /* Resources */,
+				512AFB342DEE52E70088928D /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				512AFBDB2DEE54F80088928D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				51F909F12DEBE8670010E494 /* Tim */,
@@ -187,6 +270,9 @@
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
+					512AFBCA2DEE54F60088928D = {
+						CreatedOnToolsVersion = 16.2;
+					};
 					51F909EE2DEBE8670010E494 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -220,11 +306,19 @@
 				51F909EE2DEBE8670010E494 /* Tim */,
 				51F909FE2DEBE8690010E494 /* TimTests */,
 				51F90A082DEBE8690010E494 /* TimUITests */,
+				512AFBCA2DEE54F60088928D /* TimWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		512AFBC92DEE54F60088928D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		51F909ED2DEBE8670010E494 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -249,6 +343,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		512AFBC72DEE54F60088928D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		51F909EB2DEBE8670010E494 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -273,6 +374,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		512AFBDB2DEE54F80088928D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 512AFBCA2DEE54F60088928D /* TimWidgetExtension */;
+			targetProxy = 512AFBDA2DEE54F80088928D /* PBXContainerItemProxy */;
+		};
 		51F90A012DEBE8690010E494 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 51F909EE2DEBE8670010E494 /* Tim */;
@@ -286,6 +392,56 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		512AFBDF2DEE54F80088928D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 322YBXQMM4;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TimWidgetExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.drew.Tim.TimWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		512AFBE02DEE54F80088928D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 322YBXQMM4;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TimWidgetExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.drew.Tim.TimWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		51F90A112DEBE8690010E494 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -538,6 +694,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		512AFBDE2DEE54F80088928D /* Build configuration list for PBXNativeTarget "TimWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				512AFBDF2DEE54F80088928D /* Debug */,
+				512AFBE02DEE54F80088928D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		51F909EA2DEBE8670010E494 /* Build configuration list for PBXProject "Tim" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

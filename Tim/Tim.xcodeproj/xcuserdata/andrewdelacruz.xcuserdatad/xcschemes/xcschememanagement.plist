@@ -9,6 +9,39 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>TimWidgetExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>TimWidgetExtensionExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>512AFBCA2DEE54F60088928D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>51F909EE2DEBE8670010E494</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>51F909FE2DEBE8690010E494</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>51F90A082DEBE8690010E494</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 	</dict>
 </dict>
 </plist>

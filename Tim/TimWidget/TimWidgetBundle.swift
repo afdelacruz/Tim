@@ -10,6 +10,10 @@ import SwiftUI
 
 @main
 struct TimWidgetBundle: WidgetBundle {
+    init() {
+        print("🚀 TimWidgetBundle: Widget bundle initialized!")
+    }
+    
     var body: some Widget {
         TimWidget()
         TimWidgetControl()
