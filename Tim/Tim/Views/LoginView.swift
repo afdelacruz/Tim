@@ -10,114 +10,96 @@ struct LoginView: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 24) {
-                // Header
-                VStack(spacing: 8) {
-                    Text("Tim")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.primary)
+            VStack(spacing: TimSpacing.xl) {
+                // Tim Character with Greeting
+                VStack(spacing: TimSpacing.lg) {
+                    TimCharacter(
+                        message: "Hey, I'm Tim! Do you need help with your finances?",
+                        size: .large
+                    )
                     
                     Text("Time is money")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .font(TimTypography.callout)
+                        .foregroundColor(TimColors.secondaryText)
                 }
-                .padding(.top, 40)
+                .padding(.top, TimSpacing.xxl)
                 
                 Spacer()
                 
                 // Input Fields
-                VStack(spacing: 16) {
+                VStack(spacing: TimSpacing.md) {
                     // Email TextField
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: TimSpacing.sm) {
                         Text("Email")
-                            .font(.headline)
-                            .foregroundColor(.primary)
+                            .font(TimTypography.headline)
+                            .foregroundColor(TimColors.primaryText)
                         
-                        TextField("Enter your email", text: $viewModel.email)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        TimTextField("Enter your email", text: $viewModel.email)
                             .keyboardType(.emailAddress)
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
                     }
                     
                     // PIN SecureField
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: TimSpacing.sm) {
                         Text("PIN")
-                            .font(.headline)
-                            .foregroundColor(.primary)
+                            .font(TimTypography.headline)
+                            .foregroundColor(TimColors.primaryText)
                         
-                        SecureField("Enter 4-digit PIN", text: $viewModel.pin)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        TimTextField("Enter 4-digit PIN", text: $viewModel.pin, isSecure: true)
                             .keyboardType(.numberPad)
                     }
                 }
-                .padding(.horizontal, 32)
+                .padding(.horizontal, TimSpacing.xl)
                 
                 // Error Message
                 if let errorMessage = viewModel.errorMessage {
                     Text(errorMessage)
-                        .foregroundColor(.red)
-                        .font(.caption)
+                        .foregroundColor(TimColors.error)
+                        .font(TimTypography.caption)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
+                        .padding(.horizontal, TimSpacing.xl)
                 }
                 
                 // Buttons
-                VStack(spacing: 12) {
+                VStack(spacing: TimSpacing.md) {
                     // Login Button
-                    Button(action: {
-                        Task {
-                            await viewModel.login()
-                        }
-                    }) {
-                        HStack {
-                            if viewModel.isLoading {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                    .scaleEffect(0.8)
+                    TimButton(
+                        title: viewModel.isLoading ? "Signing In..." : "Sign In",
+                        action: {
+                            Task {
+                                await viewModel.login()
                             }
-                            
-                            Text(viewModel.isLoading ? "Signing In..." : "Sign In")
-                                .fontWeight(.semibold)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 50)
-                        .background(viewModel.isLoginButtonEnabled ? Color.blue : Color.gray)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                    }
+                        },
+                        style: .primary
+                    )
                     .disabled(!viewModel.isLoginButtonEnabled || viewModel.isLoading)
+                    .opacity(viewModel.isLoginButtonEnabled && !viewModel.isLoading ? 1.0 : 0.6)
                     
                     // Register Button
-                    Button(action: {
-                        Task {
-                            await viewModel.register()
-                        }
-                    }) {
-                        Text("Create Account")
-                            .fontWeight(.medium)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 50)
-                            .background(Color.clear)
-                            .foregroundColor(.blue)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.blue, lineWidth: 1)
-                            )
-                    }
+                    TimButton(
+                        title: "Create Account",
+                        action: {
+                            Task {
+                                await viewModel.register()
+                            }
+                        },
+                        style: .outline
+                    )
                     .disabled(viewModel.isLoading)
+                    .opacity(viewModel.isLoading ? 0.6 : 1.0)
                 }
-                .padding(.horizontal, 32)
+                .padding(.horizontal, TimSpacing.xl)
                 
                 Spacer()
                 
                 // Footer
                 Text("Secure authentication with PIN")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .padding(.bottom, 20)
+                    .font(TimTypography.caption)
+                    .foregroundColor(TimColors.secondaryText)
+                    .padding(.bottom, TimSpacing.lg)
             }
+            .timBackground()
             .navigationBarHidden(true)
             .onAppear {
                 Task {

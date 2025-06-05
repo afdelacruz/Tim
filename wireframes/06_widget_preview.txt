@@ -1,0 +1,49 @@
+═══════════════════════════════════════════════════════════════
+                        WIDGET PREVIEW SCREEN
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│ [←]                Widget Preview                           │
+│                                                             │
+│                                                             │
+│               Your widget is ready!                        │
+│                                                             │
+│                                                             │
+│           Here's what it will look like on                 │
+│                 your home screen:                          │
+│                                                             │
+│                                                             │
+│        ┌─────────────────────────────────────────┐         │
+│        │                                         │         │
+│        │    +$2,340   ●                          │         │
+│        │    -$1,890   ●                          │         │
+│        │    January 1-31                         │         │
+│        │                                         │         │
+│        └─────────────────────────────────────────┘         │
+│                                                             │
+│                                                             │
+│              Based on your connected accounts:             │
+│                                                             │
+│    • Chase Checking (Inflows): +$2,340 this month         │
+│    • Discover Credit (Outflows): -$1,890 this month       │
+│                                                             │
+│                                                             │
+│              [Add Widget to Home Screen]                    │
+│                                                             │
+│                   [Customize Widget]                        │
+│                                                             │
+│                                                             │
+│                      [Continue]                             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════
+NOTES:
+- Shows actual user data from their categorized accounts
+- Widget preview matches exact iOS widget appearance
+- Breakdown explains where numbers come from
+- Clear call-to-action for adding widget
+- Optional customization for advanced users
+- Continue button leads to dashboard/completion
+- Real data builds confidence in the value proposition
+════════════════════════════════════════════════════════════════ 
