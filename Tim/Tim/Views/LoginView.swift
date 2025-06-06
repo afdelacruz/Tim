@@ -20,7 +20,7 @@ struct LoginView: View {
                             .fontWeight(.bold)
                         
                         Text("Time is money")
-                            .font(TimTypography.title3)
+                            .font(TimTypography.title2)
                             .foregroundColor(TimColors.secondaryText)
                     }
                     .padding(.top, TimSpacing.xxl * 2)
