@@ -12,24 +12,26 @@ struct LoginView: View {
         NavigationView {
             ZStack {
                 VStack(spacing: TimSpacing.xl) {
-                    // Header with integrated Tim branding
-                    VStack(spacing: TimSpacing.sm) {
-                        HStack(alignment: .center, spacing: TimSpacing.sm) {
-                            Image("TimWaving")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 40, height: 40)
-                            
+                    // Header with side-by-side layout
+                    HStack(alignment: .center, spacing: TimSpacing.lg) {
+                        // Text section
+                        VStack(alignment: .leading, spacing: TimSpacing.xs) {
                             Text("Tim")
                                 .font(.custom("SF Pro Display", size: 32))
                                 .fontWeight(.semibold)
                                 .foregroundColor(TimColors.primaryText)
+                            
+                            Text("Your personal finance companion")
+                                .font(.custom("SF Pro Display", size: 16))
+                                .fontWeight(.medium)
+                                .foregroundColor(Color(hex: "#4A4A4A"))
                         }
                         
-                        Text("Your personal finance companion")
-                            .font(.custom("SF Pro Display", size: 16))
-                            .fontWeight(.medium)
-                            .foregroundColor(Color(hex: "#4A4A4A"))
+                        // Tim figure section
+                        Image("TimWaving")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 80, height: 80)
                     }
                     .padding(.top, TimSpacing.xxl * 2)
                     
