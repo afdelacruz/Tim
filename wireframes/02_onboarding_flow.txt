@@ -1,0 +1,71 @@
+═══════════════════════════════════════════════════════════════
+                      ONBOARDING SCREEN 2/3
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│ [Back]                                              [Skip]  │
+│                                                             │
+│                                                             │
+│                    [MEDIUM TIM CHARACTER]                   │
+│                         400x300px                          │
+│                    Speech bubble says:                     │
+│              "Here's how it works..."                      │
+│                                                             │
+│                                                             │
+│         1. Connect your bank accounts securely             │
+│                                                             │
+│         2. Choose which are for inflows/outflows           │
+│                                                             │
+│         3. Add the widget to your home screen              │
+│                                                             │
+│         4. Glance anytime to see your money flow!          │
+│                                                             │
+│                                                             │
+│                        ○ ● ○                               │
+│                     (page dots)                            │
+│                                                             │
+│                                                             │
+│                        [Next]                              │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════
+                      ONBOARDING SCREEN 3/3
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│ [Back]                                              [Skip]  │
+│                                                             │
+│                                                             │
+│                    [MEDIUM TIM CHARACTER]                   │
+│                         400x300px                          │
+│                    Speech bubble says:                     │
+│                 "Ready to get started?"                    │
+│                                                             │
+│                                                             │
+│               Your widget will look like this:             │
+│                                                             │
+│            ┌─────────────────────────────────┐             │
+│            │  +$2,340  ●                     │             │
+│            │  -$1,890  ●                     │             │
+│            │  January 1-31                   │             │
+│            └─────────────────────────────────┘             │
+│                                                             │
+│                    Simple and clean!                       │
+│                                                             │
+│                        ○ ○ ●                               │
+│                     (page dots)                            │
+│                                                             │
+│                                                             │
+│                  [Let's Set It Up!]                        │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════
+NOTES:
+- Screen 2: Explains the simple 4-step process
+- Screen 3: Shows the end goal (widget preview)
+- Tim gets smaller but stays present
+- Clear progression with page dots
+- Final CTA leads to login/register
+════════════════════════════════════════════════════════════════ 

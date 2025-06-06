@@ -9,14 +9,21 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var loginViewModel = LoginViewModel()
+    @State private var hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
     
     var body: some View {
         Group {
             if loginViewModel.isAuthenticated {
                 // Main app content (placeholder for now)
                 MainAppView(loginViewModel: loginViewModel)
+            } else if !hasSeenOnboarding {
+                // Show onboarding for first-time users
+                OnboardingView(onComplete: {
+                    hasSeenOnboarding = true
+                    UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+                })
             } else {
-                // Login flow
+                // Login flow for returning users
                 LoginView(viewModel: loginViewModel)
             }
         }
@@ -62,6 +69,7 @@ struct MainAppView: View {
                     Text("Profile")
                 }
         }
+        .accentColor(TimColors.black)
     }
 }
 
@@ -71,58 +79,69 @@ struct DashboardView: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                Text("Welcome to Tim!")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
-                if let user = loginViewModel.currentUser {
-                    Text("Hello, \(user.email)")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
+            VStack(spacing: TimSpacing.xl) {
+                // Tim Character Welcome
+                VStack(spacing: TimSpacing.lg) {
+                    TimCharacter(
+                        message: "Welcome back! Ready to check your finances?",
+                        size: .medium
+                    )
+                    
+                    if let user = loginViewModel.currentUser {
+                        Text("Hello, \(user.email.components(separatedBy: "@").first ?? "there")!")
+                            .font(TimTypography.headline)
+                            .foregroundColor(TimColors.primaryText)
+                    }
                 }
-                
-                Text("🎉 Authentication Complete!")
-                    .font(.title2)
-                    .foregroundColor(.green)
-                
-                Text("Your backend is connected and working!")
-                    .font(.body)
-                    .multilineTextAlignment(.center)
-                    .padding()
+                .padding(.top, TimSpacing.lg)
                 
                 // Quick Actions
-                VStack(spacing: 16) {
+                VStack(spacing: TimSpacing.md) {
                     NavigationLink(destination: PlaidLinkView()) {
                         HStack {
                             Image(systemName: "building.columns")
+                                .foregroundColor(TimColors.primaryText)
                             Text("Connect Bank Account")
+                                .font(TimTypography.body)
+                                .foregroundColor(TimColors.primaryText)
                             Spacer()
                             Image(systemName: "chevron.right")
+                                .foregroundColor(TimColors.primaryText)
                         }
-                        .padding()
-                        .background(Color.blue.opacity(0.1))
-                        .cornerRadius(12)
+                        .padding(TimSpacing.md)
+                        .background(TimColors.white)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: TimCornerRadius.md)
+                                .stroke(TimColors.black, lineWidth: 2)
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.md))
                     }
-                    .foregroundColor(.blue)
                     
                     NavigationLink(destination: CategoryConfigView()) {
                         HStack {
                             Image(systemName: "slider.horizontal.3")
+                                .foregroundColor(TimColors.primaryText)
                             Text("Configure Categories")
+                                .font(TimTypography.body)
+                                .foregroundColor(TimColors.primaryText)
                             Spacer()
                             Image(systemName: "chevron.right")
+                                .foregroundColor(TimColors.primaryText)
                         }
-                        .padding()
-                        .background(Color.green.opacity(0.1))
-                        .cornerRadius(12)
+                        .padding(TimSpacing.md)
+                        .background(TimColors.white)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: TimCornerRadius.md)
+                                .stroke(TimColors.black, lineWidth: 2)
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.md))
                     }
-                    .foregroundColor(.green)
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, TimSpacing.xl)
                 
                 Spacer()
             }
+            .timBackground()
             .navigationTitle("Dashboard")
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -135,38 +154,42 @@ struct ProfileView: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
+            VStack(spacing: TimSpacing.xl) {
                 
                 if let user = loginViewModel.currentUser {
-                    VStack(spacing: 8) {
-                        Image(systemName: "person.circle.fill")
-                            .font(.system(size: 80))
-                            .foregroundColor(.blue)
+                    VStack(spacing: TimSpacing.lg) {
+                        // Tim Character for Profile
+                        TimCharacter(
+                            message: "Here's your profile info!",
+                            size: .medium
+                        )
                         
-                        Text(user.email)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        
-                        Text("Member since \(user.createdAt, style: .date)")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                        VStack(spacing: TimSpacing.sm) {
+                            Text(user.email)
+                                .font(TimTypography.title2)
+                                .foregroundColor(TimColors.primaryText)
+                            
+                            Text("Member since \(user.createdAt, style: .date)")
+                                .font(TimTypography.callout)
+                                .foregroundColor(TimColors.secondaryText)
+                        }
                     }
-                    .padding(.top, 40)
+                    .padding(.top, TimSpacing.xl)
                 }
                 
                 Spacer()
                 
-                Button("Sign Out") {
-                    loginViewModel.logout()
-                }
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.red)
-                .cornerRadius(12)
-                .padding(.horizontal)
-                .padding(.bottom, 40)
+                TimButton(
+                    title: "Sign Out",
+                    action: {
+                        loginViewModel.logout()
+                    },
+                    style: .outline
+                )
+                .padding(.horizontal, TimSpacing.xl)
+                .padding(.bottom, TimSpacing.xl)
             }
+            .timBackground()
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
         }

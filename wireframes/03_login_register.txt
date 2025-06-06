@@ -1,0 +1,44 @@
+═══════════════════════════════════════════════════════════════
+                       LOGIN/REGISTER SCREEN
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│                                                             │
+│                                                             │
+│                        Tim                                  │
+│                                                             │
+│                   Time is money                             │
+│                                                             │
+│                                                             │
+│                                                             │
+│               ┌─────────────────────────┐                   │
+│               │   Enter your email      │                   │
+│               └─────────────────────────┘                   │
+│                                                             │
+│               ┌─────────────────────────┐                   │
+│               │   Enter 4-digit PIN     │                   │
+│               └─────────────────────────┘                   │
+│                                                             │
+│                                                             │
+│                    [Sign In]                                │
+│                                                             │
+│                 [Create Account]                            │
+│                                                             │
+│                                                             │
+│                                                             │
+│                                                             │
+│ [Small Tim] "Ready to help!"                                │
+│ 80x60px                                                     │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════
+NOTES:
+- Clean, focused login interface
+- Tim appears small in bottom left (subtle presence)
+- Speech bubble is minimal and encouraging
+- Title uses Tim branding but doesn't compete with form
+- Error messages would appear between form and buttons
+- Cream background with Tim design system elements
+════════════════════════════════════════════════════════════════ 

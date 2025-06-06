@@ -1,0 +1,37 @@
+═══════════════════════════════════════════════════════════════
+                      ONBOARDING SCREEN 1/3
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│                                                     [Skip]  │
+│                                                             │
+│                                                             │
+│                       Time is Money                        │
+│                                                             │
+│                                                             │
+│               Track your money flow easily                  │
+│                                                             │
+│           I show you monthly inflows and outflows          │
+│              through a simple home screen widget           │
+│                                                             │
+│                                                             │
+│                                                             │
+│                        ● ○ ○                               │
+│                     (page dots)                            │
+│                                                             │
+│                                                             │
+│                      [Get Started]                         │
+│                     [LARGE TIM CHARACTER]                  │
+│                         600x400px                          │
+└─────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════
+NOTES:
+- "Time is Money" as main title (Tim's tagline)
+- Tim character is large and prominent (600x400px)
+- No speech bubble - cleaner, more focused design
+- Simple, clear value proposition
+- Page indicators show progression
+- Skip option for returning users
+- Cream background (#FDFBD4)
+════════════════════════════════════════════════════════════════ 
