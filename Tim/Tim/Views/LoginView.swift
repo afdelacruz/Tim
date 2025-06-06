@@ -39,7 +39,7 @@ struct LoginView: View {
                         .frame(maxHeight: TimSpacing.xl)
                     
                     // Input Fields Section - Card Container
-                    VStack(spacing: TimSpacing.lg) {
+                    VStack(spacing: TimSpacing.md) {
                         // Email Field with Label
                         VStack(alignment: .leading, spacing: TimSpacing.xs) {
                             Text("Email Address")
@@ -82,15 +82,18 @@ struct LoginView: View {
                                 .keyboardType(.numberPad)
                         }
                     }
-                    .padding(TimSpacing.lg)
+                    .padding(20)
                     .background(TimColors.white)
                     .overlay(
                         RoundedRectangle(cornerRadius: TimCornerRadius.lg)
                             .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                     )
                     .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.lg))
-                    .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
+                    .shadow(color: Color.black.opacity(0.08), radius: 4, x: 0, y: 2)
                     .padding(.horizontal, TimSpacing.xl)
+                    
+                    Spacer()
+                        .frame(height: TimSpacing.lg)
                     
                     // Error Message
                     if let errorMessage = viewModel.errorMessage {
