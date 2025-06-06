@@ -60,10 +60,10 @@ struct LoginView: View {
                                     await viewModel.login()
                                 }
                             },
-                            style: .primary
+                            style: viewModel.isLoginButtonEnabled && !viewModel.isLoading ? .primary : .outline
                         )
-                        .disabled(!viewModel.isLoginButtonEnabled || viewModel.isLoading)
-                        .opacity(viewModel.isLoginButtonEnabled && !viewModel.isLoading ? 1.0 : 0.6)
+                        .disabled(viewModel.isLoading)
+                        .opacity(viewModel.isLoading ? 0.6 : 1.0)
                         
                         // Create Account Button
                         TimButton(
