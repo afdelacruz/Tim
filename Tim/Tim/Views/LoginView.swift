@@ -102,38 +102,34 @@ struct LoginView: View {
                     }
                     
                     // Buttons Section
-                    VStack(spacing: TimSpacing.sm) {
-                        // Sign In Button - Primary, full-width, 48px height
+                    VStack(spacing: TimSpacing.md) {
+                        // Sign In Button - Primary filled, full-width, 48px height
                         Button(action: {
                             Task {
                                 await viewModel.login()
                             }
                         }) {
                             Text(viewModel.isLoading ? "Signing In..." : "Sign In")
-                                .font(.custom("SF Pro Display", size: 18))
+                                .font(.custom("SF Pro Display", size: 16))
                                 .fontWeight(.semibold)
-                                .foregroundColor(viewModel.isLoginButtonEnabled && !viewModel.isLoading ? TimColors.white : TimColors.black)
+                                .foregroundColor(TimColors.white)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 48)
-                                .background(viewModel.isLoginButtonEnabled && !viewModel.isLoading ? TimColors.black : Color.clear)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: TimCornerRadius.md)
-                                        .stroke(TimColors.black, lineWidth: 2)
-                                )
+                                .background(TimColors.black)
                                 .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.md))
                         }
-                        .disabled(viewModel.isLoading)
-                        .opacity(viewModel.isLoading ? 0.6 : 1.0)
+                        .disabled(viewModel.isLoading || !viewModel.isLoginButtonEnabled)
+                        .opacity((viewModel.isLoading || !viewModel.isLoginButtonEnabled) ? 0.6 : 1.0)
                         
-                        // Create Account Button - Outline, full-width
+                        // Create Account Button - Secondary outline, full-width
                         Button(action: {
                             Task {
                                 await viewModel.register()
                             }
                         }) {
                             Text("Create Account")
-                                .font(.custom("SF Pro Display", size: 18))
-                                .fontWeight(.medium)
+                                .font(.custom("SF Pro Display", size: 16))
+                                .fontWeight(.semibold)
                                 .foregroundColor(TimColors.black)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 48)
