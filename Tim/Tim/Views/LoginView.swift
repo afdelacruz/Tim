@@ -36,6 +36,7 @@ struct LoginView: View {
                     .padding(.top, TimSpacing.xxl * 2)
                     
                     Spacer()
+                        .frame(maxHeight: TimSpacing.xl)
                     
                     // Input Fields Section
                     VStack(spacing: TimSpacing.lg) {
