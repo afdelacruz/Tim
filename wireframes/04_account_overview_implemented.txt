@@ -1,0 +1,171 @@
+═══════════════════════════════════════════════════════════════
+                     ACCOUNT OVERVIEW SCREEN (IMPLEMENTED)
+                              Post-Login View
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│                                                       1:43  │
+│                                                    ••• 📶 🔋│
+│                                                             │
+│                                                             │
+│                                                             │
+│   Your Accounts                             🙋‍♂️ Tim         │
+│   Manage your connected bank accounts                       │
+│                                                             │
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │  C   Chase Checking                    ● Connected │   │
+│   │      Chase                                       ⚙ │   │
+│   │      Checking                                      │   │
+│   └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │  B   Savings Account               ⚠ Needs Update  │   │
+│   │      Bank of America                             ⚙ │   │
+│   │      Savings                                       │   │
+│   └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │  C   Credit Card                       ● Connected │   │
+│   │      Capital One                                 ⚙ │   │
+│   │      Credit                                        │   │
+│   └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│                                                             │
+│                                                             │
+│              [+  Connect New Account]                       │
+│                                                             │
+│                                                             │
+│                                                             │
+│                                                             │
+│                                                             │
+│                                                             │
+│                                                             │
+│                                                             │
+│                                                             │
+│                     ▬▬▬▬▬▬▬▬▬▬▬                            │
+└─────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════
+EMPTY STATE (when no accounts connected):
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│   Your Accounts                             🙋‍♂️ Tim         │
+│   Manage your connected bank accounts                       │
+│                                                             │
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │                                                     │   │
+│   │                     ⊕                              │   │
+│   │                                                     │   │
+│   │             No Accounts Connected                   │   │
+│   │                                                     │   │
+│   │    Connect your first bank account to get          │   │
+│   │               started with Tim                      │   │
+│   │                                                     │   │
+│   └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│              [+  Connect New Account]                       │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════
+LOADING STATE:
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│   Your Accounts                             🙋‍♂️ Tim         │
+│   Manage your connected bank accounts                       │
+│                                                             │
+│                                                             │
+│                        ⟳                                   │
+│                                                             │
+│               Loading your accounts...                      │
+│                                                             │
+│                                                             │
+│              [+  Connect New Account]                       │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════
+DESIGN SPECIFICATIONS:
+════════════════════════════════════════════════════════════════
+
+HEADER:
+- Title: "Your Accounts" (28pt SF Pro Display, semibold, black)
+- Subtitle: "Manage your connected bank accounts" (16pt SF Pro Display, medium, gray)
+- Tim character: 80x80px TimWaving image, right-aligned
+- Consistent with login screen header layout
+
+ACCOUNT CARDS:
+- White background with subtle shadow (black 5% opacity, 4px radius)
+- 16px border radius for rounded corners
+- 24px internal padding
+- Bank icon: 44x44px black circle with white first letter (18pt bold)
+- Account name: 16pt SF Pro Display, semibold, black
+- Institution: 14pt SF Pro Display, gray
+- Account type: 12pt SF Pro Display, light gray
+
+STATUS INDICATORS:
+- Connected: Green dot + "Connected" text (12pt medium)
+- Needs Update: Orange dot + "Needs Update" text (12pt medium)
+- Positioned top-right of each card
+
+SETTINGS ICON:
+- Gray gear icon (14pt system font)
+- Positioned bottom-right of each card
+- Tappable for future account management
+
+ADD ACCOUNT BUTTON:
+- Full-width black button, 48px height
+- White text: "Connect New Account" (16pt SF Pro Display, semibold)
+- Plus icon (16pt) with 8px spacing
+- 12px border radius, disabled state with 60% opacity
+
+LAYOUT:
+- Cream background (#FFF9EB) consistent with Tim design system
+- 32px horizontal margins throughout
+- 24px spacing between major sections
+- 16px spacing between account cards
+- Responsive LazyVStack for account list
+
+STATES:
+- Loading: Progress spinner + "Loading your accounts..." text
+- Empty: Large plus icon + descriptive text in white card container
+- Populated: Scrollable list of account cards
+
+NAVIGATION:
+- No visible nav bar (navigationBarHidden: true)
+- Future: Tap account card → account details
+- Future: Tap settings → account management
+- Future: Tap add button → Plaid Link flow
+
+════════════════════════════════════════════════════════════════
+TECHNICAL IMPLEMENTATION NOTES:
+════════════════════════════════════════════════════════════════
+
+VIEW MODEL:
+- AccountOverviewViewModel with @Published properties
+- Mock data for wireframe (3 sample accounts)
+- Async loading simulation (1 second delay)
+- Error handling structure prepared
+
+DATA MODEL:
+- Uses existing PlaidAccount model from PlaidModels.swift
+- Properties: id, name, accountType, institutionName, isInflow, isOutflow, needsReauthentication, createdAt
+
+COMPONENTS:
+- AccountOverviewView (main container)
+- AccountRowView (reusable account card component)
+- Modular design with private computed properties
+
+FUTURE INTEGRATIONS:
+- TODO: Real API call to fetch user accounts
+- TODO: Navigation to Plaid Link flow
+- TODO: Account settings/management screens
+- TODO: Real-time status updates
+- TODO: Error handling with user feedback
+
+════════════════════════════════════════════════════════════════
+``` 

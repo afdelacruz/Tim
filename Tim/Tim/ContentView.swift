@@ -11,10 +11,13 @@ struct ContentView: View {
     @StateObject private var loginViewModel = LoginViewModel()
     @State private var hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
     
+    // DEVELOPMENT: Set to true to bypass login during development
+    private let isDevelopmentMode = true
+    
     var body: some View {
         Group {
-            if loginViewModel.isAuthenticated {
-                // Main app content (placeholder for now)
+            if isDevelopmentMode || loginViewModel.isAuthenticated {
+                // Main app content with TabView navigation
                 MainAppView(loginViewModel: loginViewModel)
             } else if !hasSeenOnboarding {
                 // Show onboarding for first-time users
@@ -28,8 +31,10 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            Task {
-                await loginViewModel.checkExistingAuth()
+            if !isDevelopmentMode {
+                Task {
+                    await loginViewModel.checkExistingAuth()
+                }
             }
         }
     }
@@ -46,20 +51,6 @@ struct MainAppView: View {
                 .tabItem {
                     Image(systemName: "house")
                     Text("Dashboard")
-                }
-            
-            // Bank Accounts Tab
-            PlaidLinkView()
-                .tabItem {
-                    Image(systemName: "building.columns")
-                    Text("Accounts")
-                }
-            
-            // Categories Tab
-            CategoryConfigView()
-                .tabItem {
-                    Image(systemName: "slider.horizontal.3")
-                    Text("Categories")
                 }
             
             // Profile Tab
@@ -80,10 +71,10 @@ struct DashboardView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: TimSpacing.xl) {
-                // Tim Character Welcome
+                // Tim Character and User Greeting
                 VStack(spacing: TimSpacing.lg) {
                     TimCharacter(
-                        message: "Welcome back! Ready to check your finances?",
+                        message: "",
                         size: .medium
                     )
                     
@@ -117,7 +108,7 @@ struct DashboardView: View {
                         .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.md))
                     }
                     
-                    NavigationLink(destination: CategoryConfigView()) {
+                    NavigationLink(destination: AccountOverviewView()) {
                         HStack {
                             Image(systemName: "slider.horizontal.3")
                                 .foregroundColor(TimColors.primaryText)
