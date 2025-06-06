@@ -89,7 +89,7 @@ struct LoginView: View {
                     Spacer()
                     HStack {
                         TimCharacter(
-                            message: "Ready to help!",
+                            message: "",
                             size: .small
                         )
                         Spacer()
