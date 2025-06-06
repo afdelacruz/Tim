@@ -9,21 +9,23 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var loginViewModel = LoginViewModel()
+    @State private var hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
     
     var body: some View {
         Group {
-            // TEMPORARY: Show onboarding for visual testing
-            OnboardingView()
-            
-            /* Original logic - will restore later
             if loginViewModel.isAuthenticated {
                 // Main app content (placeholder for now)
                 MainAppView(loginViewModel: loginViewModel)
+            } else if !hasSeenOnboarding {
+                // Show onboarding for first-time users
+                OnboardingView(onComplete: {
+                    hasSeenOnboarding = true
+                    UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+                })
             } else {
-                // Login flow
+                // Login flow for returning users
                 LoginView(viewModel: loginViewModel)
             }
-            */
         }
         .onAppear {
             Task {

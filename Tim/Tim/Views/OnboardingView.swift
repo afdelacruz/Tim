@@ -3,6 +3,7 @@ import SwiftUI
 struct OnboardingView: View {
     @State private var currentPage = 0
     let totalPages = 3
+    let onComplete: () -> Void
     
     var body: some View {
         TabView(selection: $currentPage) {
@@ -26,8 +27,7 @@ struct OnboardingView: View {
                 HStack {
                     Spacer()
                     Button("Skip") {
-                        // TODO: Navigate to login/register
-                        print("Skip tapped")
+                        onComplete()
                     }
                     .font(TimTypography.body)
                     .foregroundColor(TimColors.primaryText)
@@ -89,8 +89,9 @@ struct OnboardingPage1: View {
             TimButton(
                 title: "Get Started",
                 action: {
-                    // TODO: Navigate to registration
-                    print("Get Started tapped")
+                    withAnimation {
+                        currentPage = 1
+                    }
                 },
                 style: .primary
             )
@@ -116,10 +117,16 @@ struct OnboardingPage2: View {
             
             // Steps
             VStack(spacing: TimSpacing.lg) {
-                OnboardingStep(number: "1", text: "Connect your bank accounts securely")
+                OnboardingStep(number: "1", text: "Connect with bank-level encryption")
                 OnboardingStep(number: "2", text: "Choose which are for inflows/outflows")
                 OnboardingStep(number: "3", text: "Add the widget to your home screen")
                 OnboardingStep(number: "4", text: "Glance anytime to see your money flow!")
+                
+                // Security trust message
+                Text("Powered by Plaid - trusted by millions")
+                    .font(TimTypography.caption)
+                    .foregroundColor(TimColors.secondaryText)
+                    .padding(.top, TimSpacing.sm)
             }
             .padding(.horizontal, TimSpacing.xl)
             
@@ -129,8 +136,9 @@ struct OnboardingPage2: View {
             TimButton(
                 title: "Next",
                 action: {
-                    // TODO: Navigate to next page
-                    print("Next tapped")
+                    withAnimation {
+                        currentPage = 2
+                    }
                 },
                 style: .primary
             )
@@ -173,7 +181,7 @@ struct OnboardingPage3: View {
             
             // Widget preview section
             VStack(spacing: TimSpacing.lg) {
-                Text("And now you have your widget!")
+                Text("Your $2.99/month widget is ready!")
                     .font(TimTypography.title2)
                     .foregroundColor(TimColors.primaryText)
                     .multilineTextAlignment(.center)
@@ -238,8 +246,7 @@ struct OnboardingPage3: View {
             TimButton(
                 title: "Let's Set It Up!",
                 action: {
-                    // TODO: Navigate to login/register
-                    print("Let's Set It Up tapped")
+                    onComplete()
                 },
                 style: .primary
             )
@@ -250,5 +257,5 @@ struct OnboardingPage3: View {
 }
 
 #Preview {
-    OnboardingView()
+    OnboardingView(onComplete: {})
 } 
