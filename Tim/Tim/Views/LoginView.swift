@@ -11,12 +11,12 @@ struct LoginView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                VStack(spacing: TimSpacing.xl) {
+                VStack(spacing: TimSpacing.lg) {
                     // Header with side-by-side layout
                     HStack(alignment: .center, spacing: TimSpacing.lg) {
                         // Text section
                         VStack(alignment: .leading, spacing: TimSpacing.xs) {
-                            Text("Tim")
+                            Text("Welcome to Tim")
                                 .font(.custom("SF Pro Display", size: 32))
                                 .fontWeight(.semibold)
                                 .foregroundColor(TimColors.primaryText)
