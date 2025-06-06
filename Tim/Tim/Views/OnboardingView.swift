@@ -8,15 +8,15 @@ struct OnboardingView: View {
     var body: some View {
         TabView(selection: $currentPage) {
             // Page 1 - Main Introduction
-            OnboardingPage1()
+            OnboardingPage1(currentPage: $currentPage)
                 .tag(0)
             
-            // Page 2 - How it works (placeholder for now)
-            OnboardingPage2()
+            // Page 2 - How it works
+            OnboardingPage2(currentPage: $currentPage)
                 .tag(1)
             
-            // Page 3 - Widget preview (placeholder for now)
-            OnboardingPage3()
+            // Page 3 - Widget preview
+            OnboardingPage3(onComplete: onComplete)
                 .tag(2)
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -55,6 +55,8 @@ struct OnboardingView: View {
 }
 
 struct OnboardingPage1: View {
+    @Binding var currentPage: Int
+    
     var body: some View {
         VStack(spacing: TimSpacing.xl) {
             // Top spacing
@@ -102,6 +104,8 @@ struct OnboardingPage1: View {
 }
 
 struct OnboardingPage2: View {
+    @Binding var currentPage: Int
+    
     var body: some View {
         VStack(spacing: TimSpacing.xl) {
             // Top spacing
@@ -174,6 +178,8 @@ struct OnboardingStep: View {
 }
 
 struct OnboardingPage3: View {
+    let onComplete: () -> Void
+    
     var body: some View {
         VStack(spacing: TimSpacing.xl) {
             // Top spacing
