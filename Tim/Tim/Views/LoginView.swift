@@ -84,17 +84,17 @@ struct LoginView: View {
                     Spacer()
                 }
                 
-                // Small waving Tim in bottom left corner
+                // Large waving Tim in bottom right corner
                 VStack {
                     Spacer()
                     HStack {
+                        Spacer()
                         Image("TimWaving")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 100, height: 100)
-                        Spacer()
+                            .frame(width: 140, height: 140)
                     }
-                    .padding(.leading, TimSpacing.lg)
+                    .padding(.trailing, TimSpacing.lg)
                     .padding(.bottom, TimSpacing.lg)
                 }
             }
