@@ -12,15 +12,16 @@ struct LoginView: View {
         NavigationView {
             ZStack {
                 VStack(spacing: TimSpacing.xl) {
-                    // Header with Tim branding
+                    // Header with welcoming message
                     VStack(spacing: TimSpacing.sm) {
-                        Text("Tim")
-                            .font(TimTypography.largeTitle)
-                            .foregroundColor(TimColors.primaryText)
+                        Text("Welcome to Tim")
+                            .font(.custom("SF Pro Display", size: 32))
                             .fontWeight(.bold)
+                            .foregroundColor(TimColors.primaryText)
                         
-                        Text("Time is money")
-                            .font(TimTypography.title2)
+                        Text("Your personal finance companion")
+                            .font(.custom("SF Pro Display", size: 18))
+                            .fontWeight(.medium)
                             .foregroundColor(TimColors.secondaryText)
                     }
                     .padding(.top, TimSpacing.xxl * 2)
