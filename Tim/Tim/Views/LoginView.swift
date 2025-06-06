@@ -12,17 +12,24 @@ struct LoginView: View {
         NavigationView {
             ZStack {
                 VStack(spacing: TimSpacing.xl) {
-                    // Header with welcoming message
+                    // Header with integrated Tim branding
                     VStack(spacing: TimSpacing.sm) {
-                        Text("Welcome to Tim")
-                            .font(.custom("SF Pro Display", size: 32))
-                            .fontWeight(.bold)
-                            .foregroundColor(TimColors.primaryText)
+                        HStack(alignment: .center, spacing: TimSpacing.sm) {
+                            Image("TimWaving")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 40, height: 40)
+                            
+                            Text("Tim")
+                                .font(.custom("SF Pro Display", size: 32))
+                                .fontWeight(.semibold)
+                                .foregroundColor(TimColors.primaryText)
+                        }
                         
                         Text("Your personal finance companion")
-                            .font(.custom("SF Pro Display", size: 18))
+                            .font(.custom("SF Pro Display", size: 16))
                             .fontWeight(.medium)
-                            .foregroundColor(TimColors.secondaryText)
+                            .foregroundColor(Color(hex: "#4A4A4A"))
                     }
                     .padding(.top, TimSpacing.xxl * 2)
                     
@@ -84,20 +91,7 @@ struct LoginView: View {
                     Spacer()
                     Spacer()
                 }
-                
-                // Large waving Tim in bottom right corner
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Image("TimWaving")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 140, height: 140)
-                    }
-                    .padding(.trailing, TimSpacing.lg)
-                    .padding(.bottom, TimSpacing.lg)
-                }
+
             }
             .timBackground()
             .navigationBarHidden(true)
