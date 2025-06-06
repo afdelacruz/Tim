@@ -12,7 +12,7 @@ struct ContentView: View {
     @State private var hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
     
     // DEVELOPMENT: Set to true to bypass login during development
-    private let isDevelopmentMode = true
+    private let isDevelopmentMode = false
     
     var body: some View {
         Group {
@@ -88,7 +88,7 @@ struct DashboardView: View {
                 
                 // Quick Actions
                 VStack(spacing: TimSpacing.md) {
-                    NavigationLink(destination: PlaidLinkView()) {
+                    NavigationLink(destination: PlaidConnectView()) {
                         HStack {
                             Image(systemName: "building.columns")
                                 .foregroundColor(TimColors.primaryText)

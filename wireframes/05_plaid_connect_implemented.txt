@@ -1,0 +1,205 @@
+═══════════════════════════════════════════════════════════════
+                      PLAID CONNECT SCREEN (IMPLEMENTED)
+                           Tim-Branded Bank Connection
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│                                                       2:45  │
+│                                                    ••• 📶 🔋│
+│                                                             │
+│ Cancel          Connect Bank Account                        │
+│                                                             │
+│                                                             │
+│   Connect Your Bank                     🙋‍♂️ Tim         │
+│   Securely link your account to start tracking             │
+│                                                             │
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │  📈  Track Your Finances                           │   │
+│   │      See all your accounts in one place            │   │
+│   └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │  ↕️   Monitor Cash Flow                             │   │
+│   │      Understand your income and spending patterns  │   │
+│   └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │  🔔  Smart Notifications                           │   │
+│   │      Get alerts about important account activity   │   │
+│   └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │  🛡️  Bank-Level Security                           │   │
+│   │      Your data is protected with 256-bit encryption│   │
+│   │                                                     │   │
+│   │      ✓ Read-only access to your accounts           │   │
+│   │      ✓ We never store your banking credentials     │   │
+│   │      ✓ Powered by Plaid's secure infrastructure    │   │
+│   │      ✓ Used by thousands of financial apps         │   │
+│   └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│                                                             │
+│              [🏢  Connect Bank Account]                     │
+│                                                             │
+│                                                             │
+│                     ▬▬▬▬▬▬▬▬▬▬▬                            │
+└─────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════
+LOADING STATE:
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│   Connect Your Bank                     🙋‍♂️ Tim         │
+│   Securely link your account to start tracking             │
+│                                                             │
+│   [Benefits and Security sections same as above]           │
+│                                                             │
+│                                                             │
+│                [⟳  Connecting...]                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════
+ERROR STATE:
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│   Connect Your Bank                     🙋‍♂️ Tim         │
+│   Securely link your account to start tracking             │
+│                                                             │
+│   [Benefits and Security sections same as above]           │
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │  ⚠️  Failed to start connection: Network error     │   │
+│   └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│              [🏢  Connect Bank Account]                     │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════
+SUCCESS ALERT:
+═══════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│              ┌─────────────────────────────┐                │
+│              │    Account Connected!       │                │
+│              │                             │                │
+│              │  Your bank account has been │                │
+│              │  successfully connected     │                │
+│              │  to Tim!                    │                │
+│              │                             │                │
+│              │           [Done]            │                │
+│              └─────────────────────────────┘                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════
+DESIGN SPECIFICATIONS:
+════════════════════════════════════════════════════════════════
+
+HEADER:
+- Title: "Connect Your Bank" (28pt SF Pro Display, semibold, black)
+- Subtitle: "Securely link your account to start tracking" (16pt SF Pro Display, medium, gray)
+- Tim character: 80x80px TimWaving image, right-aligned
+- Cancel button: Top-left navigation, black text
+- Consistent with other Tim screen headers
+
+BENEFITS SECTION:
+- Three benefit cards with icons and descriptions
+- White background with subtle shadow (black 5% opacity, 4px radius)
+- 16px border radius for rounded corners
+- 24px internal padding
+- Icons: 20pt system font, black color, 32x32 frame
+- Title: 16pt SF Pro Display, semibold, black
+- Description: 14pt SF Pro Display, gray
+
+BENEFIT CARDS:
+1. Track Your Finances (📈 chart.line.uptrend.xyaxis)
+2. Monitor Cash Flow (↕️ arrow.up.arrow.down)
+3. Smart Notifications (🔔 bell)
+
+SECURITY SECTION:
+- Green-tinted container (green 5% opacity background)
+- Green border (green 20% opacity, 1px)
+- Shield icon: 24pt, green color
+- Title: "Bank-Level Security" (18pt SF Pro Display, semibold)
+- Subtitle: "Your data is protected with 256-bit encryption" (14pt)
+- Four security points with checkmarks (14pt SF Pro Display)
+
+CONNECT BUTTON:
+- Full-width black button, 48px height
+- White text: "Connect Bank Account" (16pt SF Pro Display, semibold)
+- Building icon (16pt) with 8px spacing
+- 12px border radius
+- Loading state: spinner + "Connecting..." text
+- Disabled state with 80% opacity
+
+ERROR HANDLING:
+- Red error container with warning triangle icon
+- Error message in red text (14pt SF Pro Display)
+- Light red background (error 10% opacity)
+- 12px border radius
+
+SUCCESS ALERT:
+- Native iOS alert with "Account Connected!" title
+- Success message about connection
+- "Done" button to dismiss and return to previous screen
+
+LAYOUT:
+- Cream background (#FFF9EB) consistent with Tim design system
+- 32px horizontal margins throughout
+- 24px spacing between major sections
+- ScrollView for content that extends beyond screen
+- Proper safe area handling
+
+NAVIGATION:
+- NavigationView with inline title display
+- Cancel button returns to Dashboard
+- Success dismisses back to Dashboard
+- Plaid Link modal overlays this screen
+
+════════════════════════════════════════════════════════════════
+TECHNICAL IMPLEMENTATION NOTES:
+════════════════════════════════════════════════════════════════
+
+VIEW MODEL:
+- PlaidConnectViewModel with @Published properties
+- Real Plaid service integration for link token generation
+- Loading, error, and success state management
+- Async/await pattern for API calls
+
+PLAID INTEGRATION:
+- Uses existing PlaidService for link token generation
+- PlaidLinkRepresentable modal for actual bank connection
+- Public token exchange after successful connection
+- Proper error handling for network and Plaid errors
+
+COMPONENTS:
+- PlaidConnectView (main container)
+- Modular benefit row components
+- Security section with checkmark points
+- Reusable error and loading states
+
+USER FLOW:
+1. User taps "Connect Bank Account" on Dashboard
+2. PlaidConnectView presents with benefits and security info
+3. User taps "Connect Bank Account" button
+4. Link token fetched from backend
+5. Plaid Link modal opens for bank selection/login
+6. After successful connection, success alert shows
+7. User taps "Done" and returns to Dashboard
+
+STATES HANDLED:
+- Initial state with benefits and security info
+- Loading state during link token generation
+- Error state with dismissible error messages
+- Plaid Link modal presentation
+- Success alert after connection
+- Proper navigation back to Dashboard
+
+════════════════════════════════════════════════════════════════
+``` 
