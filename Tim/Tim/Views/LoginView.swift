@@ -13,7 +13,7 @@ struct LoginView: View {
             ZStack {
                 VStack(spacing: TimSpacing.lg) {
                     // Header with side-by-side layout
-                    HStack(alignment: .center, spacing: TimSpacing.lg) {
+                    HStack(alignment: .center, spacing: TimSpacing.xl) {
                         // Text section
                         VStack(alignment: .leading, spacing: TimSpacing.xs) {
                             Text("Welcome to Tim")
@@ -31,25 +31,65 @@ struct LoginView: View {
                         Image("TimWaving")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 100, height: 100)
+                            .frame(width: 115, height: 115)
                     }
-                    .padding(.top, TimSpacing.xxl * 2)
+                    .padding(.top, TimSpacing.xxl * 2 + 6)
                     
                     Spacer()
                         .frame(maxHeight: TimSpacing.xl)
                     
-                    // Input Fields Section
+                    // Input Fields Section - Card Container
                     VStack(spacing: TimSpacing.lg) {
-                        // Email TextField
-                        TimTextField("Enter your email", text: $viewModel.email)
-                            .keyboardType(.emailAddress)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
+                        // Email Field with Label
+                        VStack(alignment: .leading, spacing: TimSpacing.xs) {
+                            Text("Email Address")
+                                .font(.custom("SF Pro Display", size: 14))
+                                .fontWeight(.medium)
+                                .foregroundColor(TimColors.primaryText)
+                            
+                            TextField("you@example.com", text: $viewModel.email)
+                                .font(.custom("SF Pro Display", size: 16))
+                                .foregroundColor(TimColors.primaryText)
+                                .padding(TimSpacing.md)
+                                .background(TimColors.white)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: TimCornerRadius.md)
+                                        .stroke(TimColors.black, lineWidth: 2)
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.md))
+                                .keyboardType(.emailAddress)
+                                .autocapitalization(.none)
+                                .disableAutocorrection(true)
+                        }
                         
-                        // PIN SecureField
-                        TimTextField("Enter 4-digit PIN", text: $viewModel.pin, isSecure: true)
-                            .keyboardType(.numberPad)
+                        // PIN Field with Label
+                        VStack(alignment: .leading, spacing: TimSpacing.xs) {
+                            Text("PIN (4 digits)")
+                                .font(.custom("SF Pro Display", size: 14))
+                                .fontWeight(.medium)
+                                .foregroundColor(TimColors.primaryText)
+                            
+                            SecureField("••••", text: $viewModel.pin)
+                                .font(.custom("SF Pro Display", size: 16))
+                                .foregroundColor(TimColors.primaryText)
+                                .padding(TimSpacing.md)
+                                .background(TimColors.white)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: TimCornerRadius.md)
+                                        .stroke(TimColors.black, lineWidth: 2)
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.md))
+                                .keyboardType(.numberPad)
+                        }
                     }
+                    .padding(TimSpacing.lg)
+                    .background(TimColors.white)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: TimCornerRadius.lg)
+                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.lg))
+                    .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
                     .padding(.horizontal, TimSpacing.xl)
                     
                     // Error Message
@@ -62,30 +102,48 @@ struct LoginView: View {
                     }
                     
                     // Buttons Section
-                    VStack(spacing: TimSpacing.md) {
-                        // Sign In Button
-                        TimButton(
-                            title: viewModel.isLoading ? "Signing In..." : "Sign In",
-                            action: {
-                                Task {
-                                    await viewModel.login()
-                                }
-                            },
-                            style: viewModel.isLoginButtonEnabled && !viewModel.isLoading ? .primary : .outline
-                        )
+                    VStack(spacing: TimSpacing.sm) {
+                        // Sign In Button - Primary, full-width, 48px height
+                        Button(action: {
+                            Task {
+                                await viewModel.login()
+                            }
+                        }) {
+                            Text(viewModel.isLoading ? "Signing In..." : "Sign In")
+                                .font(.custom("SF Pro Display", size: 18))
+                                .fontWeight(.semibold)
+                                .foregroundColor(viewModel.isLoginButtonEnabled && !viewModel.isLoading ? TimColors.white : TimColors.black)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 48)
+                                .background(viewModel.isLoginButtonEnabled && !viewModel.isLoading ? TimColors.black : Color.clear)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: TimCornerRadius.md)
+                                        .stroke(TimColors.black, lineWidth: 2)
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.md))
+                        }
                         .disabled(viewModel.isLoading)
                         .opacity(viewModel.isLoading ? 0.6 : 1.0)
                         
-                        // Create Account Button
-                        TimButton(
-                            title: "Create Account",
-                            action: {
-                                Task {
-                                    await viewModel.register()
-                                }
-                            },
-                            style: .outline
-                        )
+                        // Create Account Button - Outline, full-width
+                        Button(action: {
+                            Task {
+                                await viewModel.register()
+                            }
+                        }) {
+                            Text("Create Account")
+                                .font(.custom("SF Pro Display", size: 18))
+                                .fontWeight(.medium)
+                                .foregroundColor(TimColors.black)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 48)
+                                .background(Color.clear)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: TimCornerRadius.md)
+                                        .stroke(TimColors.black, lineWidth: 2)
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.md))
+                        }
                         .disabled(viewModel.isLoading)
                         .opacity(viewModel.isLoading ? 0.6 : 1.0)
                     }
