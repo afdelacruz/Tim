@@ -11,9 +11,9 @@ struct LoginView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                VStack(spacing: TimSpacing.lg) {
+                VStack(spacing: TimSpacing.xs) {
                     // Header with side-by-side layout
-                    HStack(alignment: .center, spacing: TimSpacing.xl) {
+                    HStack(alignment: .center, spacing: 3) {
                         // Text section
                         VStack(alignment: .leading, spacing: TimSpacing.xs) {
                             Text("Welcome to Tim")
@@ -26,6 +26,7 @@ struct LoginView: View {
                                 .fontWeight(.medium)
                                 .foregroundColor(Color(hex: "#4A4A4A"))
                         }
+                        .padding(.leading, TimSpacing.md)
                         
                         // Tim figure section
                         Image("TimWaving")
@@ -36,7 +37,7 @@ struct LoginView: View {
                     .padding(.top, TimSpacing.xxl * 2 + 6)
                     
                     Spacer()
-                        .frame(maxHeight: TimSpacing.xl)
+                        .frame(maxHeight: 0)
                     
                     // Input Fields Section - Card Container
                     VStack(spacing: TimSpacing.md) {
@@ -82,15 +83,11 @@ struct LoginView: View {
                                 .keyboardType(.numberPad)
                         }
                     }
-                    .padding(20)
-                    .background(TimColors.white)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: TimCornerRadius.lg)
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.lg))
-                    .shadow(color: Color.black.opacity(0.08), radius: 4, x: 0, y: 2)
-                    .padding(.horizontal, TimSpacing.xl)
+.padding(.horizontal, 20)
+.padding(.vertical, 16)
+.background(TimColors.creamBackground)
+.clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.lg))
+.padding(.horizontal, TimSpacing.xl)
                     
                     Spacer()
                         .frame(height: TimSpacing.lg)
