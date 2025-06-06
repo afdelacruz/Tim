@@ -18,26 +18,6 @@ struct CategoryConfigView: View {
             ScrollView {
                 VStack(spacing: 24) {
                     
-                    // Header
-                    VStack(spacing: 16) {
-                        Image(systemName: "slider.horizontal.3")
-                            .font(.system(size: 50))
-                            .foregroundColor(.blue)
-                        
-                        VStack(spacing: 8) {
-                            Text("Account Categories")
-                                .font(.title)
-                                .fontWeight(.bold)
-                            
-                            Text("Configure which accounts contribute to your monthly inflows and outflows")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal)
-                        }
-                    }
-                    .padding(.top, 20)
-                    
                     // Error Message
                     if let errorMessage = viewModel.errorMessage {
                         VStack(spacing: 12) {
@@ -119,18 +99,20 @@ struct CategoryConfigView: View {
                                 ForEach(viewModel.accounts) { account in
                                     CategoryAccountRowView(
                                         account: account,
+                                        isLoading: viewModel.isLoading,
                                         onInflowToggle: {
+                                            print("🔄 Inflow toggle tapped for account: \(account.name)")
                                             Task {
                                                 await viewModel.toggleInflowCategory(for: account)
                                             }
                                         },
                                         onOutflowToggle: {
+                                            print("🔄 Outflow toggle tapped for account: \(account.name)")
                                             Task {
                                                 await viewModel.toggleOutflowCategory(for: account)
                                             }
                                         }
                                     )
-                                    .disabled(viewModel.isLoading)
                                 }
                             }
                         }
@@ -157,6 +139,7 @@ struct CategoryConfigView: View {
                 }
                 .padding(.bottom, 100) // Extra padding for tab bar
             }
+            .timBackground()
             .navigationTitle("Categories")
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -170,81 +153,87 @@ struct CategoryConfigView: View {
 
 struct CategoryAccountRowView: View {
     let account: PlaidAccount
+    let isLoading: Bool
     let onInflowToggle: () -> Void
     let onOutflowToggle: () -> Void
     
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: TimSpacing.md) {
             // Account Icon
-            VStack {
-                Image(systemName: accountIcon)
-                    .font(.title2)
-                    .foregroundColor(accountColor)
-                    .frame(width: 40, height: 40)
-                    .background(accountColor.opacity(0.1))
-                    .clipShape(Circle())
-            }
+            Circle()
+                .fill(TimColors.black)
+                .frame(width: 44, height: 44)
+                .overlay(
+                    Text(String(account.institutionName.prefix(1)))
+                        .font(.custom("SF Pro Display", size: 18))
+                        .fontWeight(.bold)
+                        .foregroundColor(TimColors.white)
+                )
             
             // Account Details
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: TimSpacing.xs) {
                 Text(account.name)
-                    .font(.headline)
+                    .font(.custom("SF Pro Display", size: 16))
                     .fontWeight(.semibold)
-                    .lineLimit(1)
-                
-                Text(account.accountType)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(TimColors.primaryText)
                     .lineLimit(1)
                 
                 Text(account.institutionName)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .font(.custom("SF Pro Display", size: 14))
+                    .foregroundColor(TimColors.secondaryText)
+                    .lineLimit(1)
+                
+                Text(account.accountType)
+                    .font(.custom("SF Pro Display", size: 12))
+                    .foregroundColor(TimColors.secondaryText)
                     .lineLimit(1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
             // Category Toggles
-            HStack(spacing: 16) {
+            VStack(alignment: .trailing, spacing: TimSpacing.sm) {
                 // Inflow Toggle
-                Button(action: onInflowToggle) {
-                    HStack(spacing: 6) {
-                        Image(systemName: account.isInflow ? "checkmark.circle.fill" : "circle")
-                            .foregroundColor(account.isInflow ? .green : .gray)
-                            .font(.title3)
-                        
-                        Text("In")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundColor(account.isInflow ? .green : .gray)
+                HStack(spacing: TimSpacing.xs) {
+                    Text("Inflow")
+                        .font(.custom("SF Pro Display", size: 12))
+                        .foregroundColor(TimColors.primaryText)
+                    
+                    Button(action: {
+                        print("🟢 BUTTON ACTION CALLED - Inflow for \(account.name)")
+                        onInflowToggle()
+                    }) {
+                        Image(systemName: account.isInflow ? "checkmark.square.fill" : "square")
+                            .font(.system(size: 16))
+                            .foregroundColor(account.isInflow ? Color.green : TimColors.secondaryText)
                     }
+                    .buttonStyle(PlainButtonStyle())
+                    .disabled(isLoading)
                 }
-                .buttonStyle(PlainButtonStyle())
                 
                 // Outflow Toggle
-                Button(action: onOutflowToggle) {
-                    HStack(spacing: 6) {
-                        Image(systemName: account.isOutflow ? "checkmark.circle.fill" : "circle")
-                            .foregroundColor(account.isOutflow ? .red : .gray)
-                            .font(.title3)
-                        
-                        Text("Out")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundColor(account.isOutflow ? .red : .gray)
+                HStack(spacing: TimSpacing.xs) {
+                    Text("Outflow")
+                        .font(.custom("SF Pro Display", size: 12))
+                        .foregroundColor(TimColors.primaryText)
+                    
+                    Button(action: {
+                        print("🟢 BUTTON ACTION CALLED - Outflow for \(account.name)")
+                        onOutflowToggle()
+                    }) {
+                        Image(systemName: account.isOutflow ? "checkmark.square.fill" : "square")
+                            .font(.system(size: 16))
+                            .foregroundColor(account.isOutflow ? Color.red : TimColors.secondaryText)
                     }
+                    .buttonStyle(PlainButtonStyle())
+                    .disabled(isLoading)
                 }
-                .buttonStyle(PlainButtonStyle())
             }
         }
-        .padding(16)
-        .background(Color(.systemBackground))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color(.systemGray5), lineWidth: 1)
-        )
-        .cornerRadius(12)
-        .padding(.horizontal, 16)
+        .padding(TimSpacing.lg)
+        .background(TimColors.white)
+        .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.lg))
+        .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+        .padding(.horizontal, TimSpacing.lg)
     }
     
     // MARK: - Computed Properties

@@ -108,7 +108,7 @@ struct DashboardView: View {
                         .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.md))
                     }
                     
-                    NavigationLink(destination: AccountOverviewView()) {
+                    NavigationLink(destination: CategoryConfigView()) {
                         HStack {
                             Image(systemName: "slider.horizontal.3")
                                 .foregroundColor(TimColors.primaryText)
