@@ -84,14 +84,14 @@ struct LoginView: View {
                     Spacer()
                 }
                 
-                // Small Tim character in bottom left corner
+                // Small waving Tim in bottom left corner
                 VStack {
                     Spacer()
                     HStack {
-                        TimCharacter(
-                            message: "",
-                            size: .small
-                        )
+                        Image("TimWaving")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 60, height: 60)
                         Spacer()
                     }
                     .padding(.leading, TimSpacing.lg)
