@@ -30,18 +30,7 @@ router.get('/monthly', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
     
-    // TEMPORARY: Return test data to verify widget integration works
-    // Remove this after transaction logic fix is deployed
-    return res.json({
-      success: true,
-      data: {
-        monthlyInflow: 0,
-        monthlyOutflow: 506.33,
-        periodStart: getMonthStartDate().toISOString().split('T')[0],
-        periodEnd: new Date().toISOString().split('T')[0],
-        lastUpdated: new Date().toISOString()
-      }
-    });
+    // Removed temporary test data - now using real Plaid transaction data
     
     // Get user's accounts
     const accounts = await AccountRepository.findAccountsByUserId(userId);
@@ -84,8 +73,14 @@ router.get('/monthly', authenticateToken, async (req, res) => {
         const transactions = await transactionService.fetchMonthlyTransactions(account.plaid_access_token);
         allTransactions = allTransactions.concat(transactions);
       } catch (error) {
-        // Log error but continue with other accounts
-        console.error(`Error fetching transactions for account ${account.id}:`, error.message);
+        // Log detailed error information for debugging
+        console.error(`Error fetching transactions for account ${account.id}:`, {
+          message: error.message,
+          error_code: error.error_code,
+          error_type: error.error_type,
+          status: error.status,
+          response: error.response?.data
+        });
         
         // If it's a Plaid authentication error, we could mark the account for reauthentication
         if (error.error_code === 'ITEM_LOGIN_REQUIRED') {
