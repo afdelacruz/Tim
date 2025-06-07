@@ -10,6 +10,11 @@ class CashFlowCalculationService {
     let totalOutflow = 0;
 
     transactions.forEach(transaction => {
+      // Skip undefined or invalid transactions
+      if (!transaction || !transaction.account_id) {
+        return;
+      }
+      
       const account = accountCategories[transaction.account_id];
       
       if (!account) {

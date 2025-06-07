@@ -91,9 +91,10 @@ router.get('/monthly', authenticateToken, async (req, res) => {
     }
 
     // Create account categories mapping for calculation
+    // Map by plaid_account_id since that's what transactions use
     const accountCategories = {};
     activeAccounts.forEach(account => {
-      accountCategories[account.id] = {
+      accountCategories[account.plaid_account_id] = {
         id: account.id,
         is_inflow: account.is_inflow,
         is_outflow: account.is_outflow,
