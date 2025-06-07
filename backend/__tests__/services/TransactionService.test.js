@@ -1,5 +1,4 @@
 const TransactionService = require('../../services/TransactionService');
-const { jest } = require('@jest/globals');
 
 // Mock Plaid client
 const mockPlaidClient = {
