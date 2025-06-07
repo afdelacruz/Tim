@@ -68,9 +68,13 @@ router.get('/monthly', authenticateToken, async (req, res) => {
     // Fetch transactions for all active accounts
     let allTransactions = [];
     
+    console.log(`Processing ${activeAccounts.length} active accounts for cash flow calculation`);
+    
     for (const account of activeAccounts) {
       try {
+        console.log(`Fetching transactions for account ${account.id} (${account.account_name})`);
         const transactions = await transactionService.fetchMonthlyTransactions(account.plaid_access_token);
+        console.log(`Found ${transactions.length} transactions for account ${account.id}`);
         allTransactions = allTransactions.concat(transactions);
       } catch (error) {
         // Log detailed error information for debugging
@@ -103,7 +107,12 @@ router.get('/monthly', authenticateToken, async (req, res) => {
     });
 
     // Calculate cash flow totals
+    console.log(`Total transactions collected: ${allTransactions.length}`);
+    console.log(`Account categories mapped: ${Object.keys(accountCategories).length}`);
+    
     const cashFlowTotals = cashFlowService.calculateMonthlyCashFlow(allTransactions, accountCategories);
+    
+    console.log(`Cash flow calculation result:`, cashFlowTotals);
 
     // Return results
     res.json({
