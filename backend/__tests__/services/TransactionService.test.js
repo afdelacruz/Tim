@@ -70,7 +70,9 @@ describe('TransactionService', () => {
       expect(mockPlaidClient.transactionsGet).toHaveBeenCalledWith({
         access_token: accessToken,
         start_date: '2025-01-01', // First of current month
-        end_date: '2025-01-15'    // Current date
+        end_date: '2025-01-15',   // Current date
+        offset: 0,
+        count: 500
       });
       expect(result).toEqual(expectedTransactions);
     });
@@ -91,7 +93,9 @@ describe('TransactionService', () => {
       expect(mockPlaidClient.transactionsGet).toHaveBeenCalledWith({
         access_token: accessToken,
         start_date: '2025-01-01', // Always month start
-        end_date: '2025-01-15'    // Current date
+        end_date: '2025-01-15',   // Current date
+        offset: 0,
+        count: 500
       });
     });
 
