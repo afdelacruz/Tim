@@ -43,13 +43,17 @@ class CashFlowCalculationService {
   categorizeTransaction(transaction, account) {
     const amount = Math.abs(transaction.amount);
     
-    // For inflow accounts: positive amounts count as inflow
-    const isInflow = account.is_inflow && transaction.amount > 0;
+    // PLAID CONVENTION: 
+    // - Positive amounts = money going OUT (purchases, payments)
+    // - Negative amounts = money coming IN (deposits, refunds)
     
-    // For outflow accounts: negative amounts count as outflow
-    // For inflow accounts: negative amounts also count as outflow (e.g., rent from checking)
-    const isOutflow = (account.is_outflow && transaction.amount < 0) || 
-                      (account.is_inflow && transaction.amount < 0);
+    // For inflow accounts: negative amounts count as inflow (deposits)
+    const isInflow = account.is_inflow && transaction.amount < 0;
+    
+    // For outflow accounts: positive amounts count as outflow (purchases)
+    // For inflow accounts: positive amounts also count as outflow (e.g., rent from checking)
+    const isOutflow = (account.is_outflow && transaction.amount > 0) || 
+                      (account.is_inflow && transaction.amount > 0);
 
     return {
       isInflow,
