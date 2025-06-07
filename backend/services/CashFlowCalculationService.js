@@ -9,9 +9,10 @@ class CashFlowCalculationService {
     let totalInflow = 0;
     let totalOutflow = 0;
 
-    transactions.forEach(transaction => {
+    transactions.forEach((transaction, index) => {
       // Skip undefined or invalid transactions
       if (!transaction || !transaction.account_id) {
+        console.log(`Skipping invalid transaction at index ${index}`);
         return;
       }
       
@@ -19,10 +20,19 @@ class CashFlowCalculationService {
       
       if (!account) {
         // Skip transactions for accounts not in our system
+        console.log(`Skipping transaction for unmapped account: ${transaction.account_id}`);
         return;
       }
 
       const categorization = this.categorizeTransaction(transaction, account);
+      
+      // Log transaction processing for categorized accounts
+      if (account.is_inflow || account.is_outflow) {
+        console.log(`Processing transaction for ${account.account_name}:`);
+        console.log(`  Amount: ${transaction.amount}`);
+        console.log(`  Date: ${transaction.date}`);
+        console.log(`  Categorization: inflow=${categorization.isInflow}, outflow=${categorization.isOutflow}, amount=${categorization.amount}`);
+      }
       
       if (categorization.isInflow) {
         totalInflow += categorization.amount;
