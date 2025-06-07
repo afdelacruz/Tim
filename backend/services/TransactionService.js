@@ -26,8 +26,10 @@ class TransactionService {
           access_token: accessToken,
           start_date: startDate,
           end_date: endDate,
-          offset: offset,
-          count: count
+          options: {
+            offset: offset,
+            count: count
+          }
         });
 
         allTransactions = allTransactions.concat(response.transactions);
