@@ -110,6 +110,12 @@ router.get('/monthly', authenticateToken, async (req, res) => {
     console.log(`Total transactions collected: ${allTransactions.length}`);
     console.log(`Account categories mapped: ${Object.keys(accountCategories).length}`);
     
+    // Debug: Log sample transaction and account category data
+    if (allTransactions.length > 0) {
+      console.log(`Sample transaction:`, JSON.stringify(allTransactions[0], null, 2));
+    }
+    console.log(`Account categories:`, JSON.stringify(accountCategories, null, 2));
+    
     const cashFlowTotals = cashFlowService.calculateMonthlyCashFlow(allTransactions, accountCategories);
     
     console.log(`Cash flow calculation result:`, cashFlowTotals);
