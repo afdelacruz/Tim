@@ -32,6 +32,13 @@ class TransactionService {
           }
         });
 
+        console.log(`Plaid API response for access token ${accessToken.substring(0, 10)}...:`);
+        console.log(`  Total transactions: ${response.total_transactions}`);
+        console.log(`  Returned transactions: ${response.transactions.length}`);
+        if (response.transactions.length > 0) {
+          console.log(`  Sample transaction structure:`, JSON.stringify(response.transactions[0], null, 2));
+        }
+
         allTransactions = allTransactions.concat(response.transactions);
         
         // Check if we have more transactions to fetch
