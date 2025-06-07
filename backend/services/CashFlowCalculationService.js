@@ -23,6 +23,14 @@ class CashFlowCalculationService {
         console.log(`Skipping transaction for unmapped account: ${transaction.account_id}`);
         return;
       }
+      
+      // Log all transactions for categorized accounts, even if they don't contribute to cash flow
+      if (account.is_inflow || account.is_outflow) {
+        console.log(`Found transaction for categorized account ${account.account_name} (${transaction.account_id})`);
+      } else {
+        console.log(`Skipping transaction for uncategorized account: ${account.account_name} (${transaction.account_id})`);
+        return;
+      }
 
       const categorization = this.categorizeTransaction(transaction, account);
       
