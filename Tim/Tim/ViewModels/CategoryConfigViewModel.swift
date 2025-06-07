@@ -62,7 +62,7 @@ class CategoryConfigViewModel: ObservableObject {
         let originalAccount = accounts[accountIndex]
         
         do {
-            // Optimistically update local state
+            // Optimistically update local state (preserve balance data)
             accounts[accountIndex] = PlaidAccount(
                 id: originalAccount.id,
                 name: originalAccount.name,
@@ -71,7 +71,9 @@ class CategoryConfigViewModel: ObservableObject {
                 isInflow: isInflow,
                 isOutflow: isOutflow,
                 needsReauthentication: originalAccount.needsReauthentication,
-                createdAt: originalAccount.createdAt
+                createdAt: originalAccount.createdAt,
+                currentBalance: originalAccount.currentBalance,
+                lastUpdated: originalAccount.lastUpdated
             )
             
             // Update on backend

@@ -12,6 +12,11 @@ async function setupRailwayDatabase() {
     try {
         console.log('Connecting to Railway database...');
         
+        // ⚠️  WARNING: This will delete ALL existing data!
+        console.log('⚠️  WARNING: About to drop all tables and data!');
+        console.log('Press Ctrl+C within 5 seconds to cancel...');
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        
         console.log('Dropping existing tables...');
         await pool.query('DROP TABLE IF EXISTS balance_snapshots CASCADE');
         await pool.query('DROP TABLE IF EXISTS accounts CASCADE');

@@ -187,6 +187,13 @@ struct CategoryAccountRowView: View {
                     .font(.custom("SF Pro Display", size: 12))
                     .foregroundColor(TimColors.secondaryText)
                     .lineLimit(1)
+                
+                // Balance Display
+                Text(formatBalance(account.currentBalance))
+                    .font(.custom("SF Pro Display", size: 14))
+                    .fontWeight(.medium)
+                    .foregroundColor(balanceColor(for: account))
+                    .lineLimit(1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
@@ -234,6 +241,41 @@ struct CategoryAccountRowView: View {
         .clipShape(RoundedRectangle(cornerRadius: TimCornerRadius.lg))
         .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
         .padding(.horizontal, TimSpacing.lg)
+    }
+    
+    // MARK: - Helper Functions
+    
+    private func formatBalance(_ balance: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = "USD"
+        formatter.maximumFractionDigits = 2
+        
+        if balance == 0 {
+            return "No balance data"
+        }
+        
+        return formatter.string(from: NSNumber(value: balance)) ?? "$0.00"
+    }
+    
+    private func balanceColor(for account: PlaidAccount) -> Color {
+        if account.currentBalance == 0 {
+            return TimColors.secondaryText
+        }
+        
+        // Color based on account type and balance
+        let type = account.accountType.lowercased()
+        
+        if type.contains("credit") {
+            // For credit cards, higher balance is bad (more debt)
+            return account.currentBalance > 1000 ? .red : .orange
+        } else if type.contains("loan") || type.contains("mortgage") {
+            // For loans, any balance is debt
+            return .red
+        } else {
+            // For deposit accounts, positive balance is good
+            return account.currentBalance > 0 ? .green : .red
+        }
     }
     
     // MARK: - Computed Properties

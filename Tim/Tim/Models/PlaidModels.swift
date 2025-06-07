@@ -66,6 +66,8 @@ struct PlaidAccount: Codable, Identifiable {
     let isOutflow: Bool
     let needsReauthentication: Bool
     let createdAt: Date
+    let currentBalance: Double
+    let lastUpdated: Date?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -76,10 +78,12 @@ struct PlaidAccount: Codable, Identifiable {
         case isOutflow = "is_outflow"
         case needsReauthentication = "needs_reauthentication"
         case createdAt = "created_at"
+        case currentBalance = "current_balance"
+        case lastUpdated = "last_updated"
     }
     
     // Direct initializer for tests and manual creation
-    init(id: String, name: String, accountType: String, institutionName: String, isInflow: Bool, isOutflow: Bool, needsReauthentication: Bool, createdAt: Date) {
+    init(id: String, name: String, accountType: String, institutionName: String, isInflow: Bool, isOutflow: Bool, needsReauthentication: Bool, createdAt: Date, currentBalance: Double = 0.0, lastUpdated: Date? = nil) {
         self.id = id
         self.name = name
         self.accountType = accountType
@@ -88,6 +92,8 @@ struct PlaidAccount: Codable, Identifiable {
         self.isOutflow = isOutflow
         self.needsReauthentication = needsReauthentication
         self.createdAt = createdAt
+        self.currentBalance = currentBalance
+        self.lastUpdated = lastUpdated
     }
     
     // Decoder initializer for JSON decoding
@@ -101,6 +107,14 @@ struct PlaidAccount: Codable, Identifiable {
         isInflow = try container.decode(Bool.self, forKey: .isInflow)
         isOutflow = try container.decode(Bool.self, forKey: .isOutflow)
         needsReauthentication = try container.decode(Bool.self, forKey: .needsReauthentication)
+        // Handle currentBalance as either Double or String (from backend)
+        if let balanceDouble = try? container.decodeIfPresent(Double.self, forKey: .currentBalance) {
+            currentBalance = balanceDouble
+        } else if let balanceString = try? container.decodeIfPresent(String.self, forKey: .currentBalance) {
+            currentBalance = Double(balanceString) ?? 0.0
+        } else {
+            currentBalance = 0.0
+        }
         
         // Handle date decoding similar to User model
         let dateString = try container.decode(String.self, forKey: .createdAt)
@@ -113,6 +127,21 @@ struct PlaidAccount: Codable, Identifiable {
             // Fallback without fractional seconds
             formatter.formatOptions = [.withInternetDateTime]
             createdAt = formatter.date(from: dateString) ?? Date()
+        }
+        
+        // Handle lastUpdated date decoding
+        if let lastUpdatedString = try container.decodeIfPresent(String.self, forKey: .lastUpdated) {
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            
+            if let date = formatter.date(from: lastUpdatedString) {
+                lastUpdated = date
+            } else {
+                formatter.formatOptions = [.withInternetDateTime]
+                lastUpdated = formatter.date(from: lastUpdatedString)
+            }
+        } else {
+            lastUpdated = nil
         }
     }
 }
@@ -144,6 +173,18 @@ struct SavedPlaidAccount: Codable, Identifiable {
             createdDate = formatter.date(from: createdAt) ?? Date()
         }
         
+        let lastUpdatedDate: Date?
+        if let lastUpdated = lastUpdated {
+            if let date = formatter.date(from: lastUpdated) {
+                lastUpdatedDate = date
+            } else {
+                formatter.formatOptions = [.withInternetDateTime]
+                lastUpdatedDate = formatter.date(from: lastUpdated)
+            }
+        } else {
+            lastUpdatedDate = nil
+        }
+        
         return PlaidAccount(
             id: id,
             name: name,
@@ -152,7 +193,9 @@ struct SavedPlaidAccount: Codable, Identifiable {
             isInflow: isInflow, // Use the persisted category settings
             isOutflow: isOutflow,
             needsReauthentication: needsReauth,
-            createdAt: createdDate
+            createdAt: createdDate,
+            currentBalance: currentBalance,
+            lastUpdated: lastUpdatedDate
         )
     }
 }
